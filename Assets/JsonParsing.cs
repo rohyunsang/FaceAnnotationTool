@@ -1,51 +1,65 @@
-using UnityEngine;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
 
 [System.Serializable]
-public class SquareDataWrapper
+public class JSONData
 {
-    public List<SquareData> squares;
-}
-
-[System.Serializable]
-public class SquareData
-{
-    public string id;
-    public PointData point1;
-    public PointData point2;
-}
-
-[System.Serializable]
-public class PointData
-{
-    public float x;
-    public float y;
+    public int[] id;
+    public string[] region_name;
 }
 
 public class JsonParsing : MonoBehaviour
 {
-    public List<SquareData> squares = null;
-
     public void ParseJSONData(string jsonData)
     {
-        // Deserialize the JSON data into the SquareDataWrapper object
-        SquareDataWrapper dataWrapper = JsonUtility.FromJson<SquareDataWrapper>(jsonData);
+        // Deserialize the JSON data into the JSONData object
+        JSONData data = JsonUtility.FromJson<JSONData>(jsonData);
 
-        // Clear existing squares list
-        squares.Clear();
+        // Access the "id" values
+        int[] idArray = data.id;
+        string[] regionNames = data.region_name;
+        
 
-        // Add the parsed squares to the list
-        squares.AddRange(dataWrapper.squares);
-
-        // Access individual square objects and their properties
-        if (squares != null)
+        // Print the "id" values
+        Debug.Log("id:");
+        foreach (int id in idArray)
         {
-            foreach (SquareData square in squares)
+            Debug.Log(id);
+        }
+
+        // Print the "region_name" values
+        Debug.Log("region_name:");
+        foreach (string regionName in regionNames)
+        {
+            Debug.Log(regionName);
+        }
+
+        int start = jsonData.IndexOf("[[[");
+
+        if (start != -1)
+        {
+            int end = jsonData.IndexOf("]]]", start);
+
+            if (end != -1)
             {
-                Debug.Log("Square ID: " + square.id);
-                Debug.Log("Point 1: (" + square.point1.x + ", " + square.point1.y + ")");
-                Debug.Log("Point 2: (" + square.point2.x + ", " + square.point2.y + ")");
+                string bboxPointData = jsonData.Substring(start, end - start + 3);
+
+                string[] bboxPoints = bboxPointData.Split(new string[] { "], [" }, System.StringSplitOptions.None);
+
+                Debug.Log("BBox Point List:");
+
+                foreach (string pointData in bboxPoints)
+                {
+                    string[] coordinates = pointData.Replace("[", string.Empty).Replace("]", string.Empty).Split(',');
+
+                    int x = int.Parse(coordinates[0]);
+                    int y = int.Parse(coordinates[1]);
+
+                    Debug.Log("[" + x + ", " + y + "]");
+                }
             }
         }
+
     }
 }
