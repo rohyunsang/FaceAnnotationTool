@@ -787,8 +787,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8311acf80c2bf9479b1e669b59326ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rectanglePrefab: {fileID: 0}
-  parentTransform: {fileID: 0}
+  rectangle: {fileID: 0}
+  parentTransform: {fileID: 602049596}
 --- !u!1 &646257219
 GameObject:
   m_ObjectHideFlags: 0
