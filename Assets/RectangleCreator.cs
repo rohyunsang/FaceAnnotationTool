@@ -12,9 +12,11 @@ public class RectangleCreator : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
     private Vector2 originalPosition;
     private Vector2 pivot = new Vector2(0.5f, 0.5f);
+    public string curObjName = "";
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        
         // Create a new rectangle and set its parent to the main image
         rectangle = Instantiate(rectanglePrefab, mainImage.transform);
         currentRectangle = rectangle.GetComponent<RectTransform>();
@@ -55,6 +57,7 @@ public class RectangleCreator : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        rectangle.name = curObjName;
 
         Vector3[] localCorners = new Vector3[4];
         currentRectangle.GetLocalCorners(localCorners);
