@@ -55,7 +55,7 @@ public class JsonParsing : MonoBehaviour
 
                 string[] bboxPoints = bboxPointData.Split(new string[] { "], [" }, System.StringSplitOptions.None);
 
-                Debug.Log("BBox Point List:");
+                
                 int idx = 0; // using 2 point to 4 point 
                 foreach (string pointData in bboxPoints)
                 {
@@ -64,33 +64,19 @@ public class JsonParsing : MonoBehaviour
                     {
                         infoArray[idx / 2].point.Add(int.Parse(coordinates[0]));
                         infoArray[idx / 2].point.Add(int.Parse(coordinates[1]));
-                        Debug.Log(idx / 2);
                     }
                     else
                     {
                         infoArray[idx / 2].point.Add(int.Parse(coordinates[0]));
                         infoArray[idx / 2].point.Add(int.Parse(coordinates[1]));
-                        Debug.Log(idx / 2 + " idx");
                     }
                     idx++;
                 }
             }
         }
 
-        // using Debug
-        for(int i = 0; i < infoArray.Length; i++)
-        {
-            Debug.Log(infoArray[i].id);
-            Debug.Log(infoArray[i].region_name);
-            foreach(int a in infoArray[i].point)
-            {
-                Debug.Log(a);
-            }
-            Debug.Log(""); // Add an empty line between each Info object
-        }
-
         // all Done parsing json data call ObjInstantManager function
-        ObjInstantGameObject.GetComponent<ObjInstantManager>().ObjInstant();
+        ObjInstantGameObject.GetComponent<ObjInstantManager>().ObjInstant(infoArray);
         // ObjInstant Function in ObjInstantManager Class in ObjInstantGameObject
     }
 }
