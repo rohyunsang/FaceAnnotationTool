@@ -1,16 +1,27 @@
+using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
+
 [System.Serializable]
-public class JSONData
+public class JSONData  // use json Parsing point is error so just split ','
 {
     public int[] id;
     public string[] region_name;
 }
 
+[System.Serializable]
+public class Info  //structure
+{
+    public string id;  // needs int to string 
+    public string region_name;
+    public List<int> point;
+}
+
 public class JsonParsing : MonoBehaviour
 {
+    [SerializeField]
+    private Info[] infoArray = new Info[8];
     public void ParseJSONData(string jsonData)
     {
         // Deserialize the JSON data into the JSONData object
@@ -22,17 +33,13 @@ public class JsonParsing : MonoBehaviour
         
 
         // Print the "id" values
-        Debug.Log("id:");
-        foreach (int id in idArray)
+        
+        for(int i = 0; i < idArray.Length ; i++)
         {
-            Debug.Log(id);
-        }
-
-        // Print the "region_name" values
-        Debug.Log("region_name:");
-        foreach (string regionName in regionNames)
-        {
-            Debug.Log(regionName);
+            infoArray[i] = new Info();
+            infoArray[i].id = idArray[i].ToString();
+            infoArray[i].region_name = regionNames[i];
+            infoArray[i].point = new List<int>();
         }
 
         int start = jsonData.IndexOf("[[[");
@@ -48,18 +55,37 @@ public class JsonParsing : MonoBehaviour
                 string[] bboxPoints = bboxPointData.Split(new string[] { "], [" }, System.StringSplitOptions.None);
 
                 Debug.Log("BBox Point List:");
-
+                int idx = 0; // using 2 point to 4 point 
                 foreach (string pointData in bboxPoints)
                 {
                     string[] coordinates = pointData.Replace("[", string.Empty).Replace("]", string.Empty).Split(',');
-
-                    int x = int.Parse(coordinates[0]);
-                    int y = int.Parse(coordinates[1]);
-
-                    Debug.Log("[" + x + ", " + y + "]");
+                    if (idx % 2 == 0)
+                    {
+                        infoArray[idx / 2].point.Add(int.Parse(coordinates[0]));
+                        infoArray[idx / 2].point.Add(int.Parse(coordinates[1]));
+                        Debug.Log(idx / 2);
+                    }
+                    else
+                    {
+                        infoArray[idx / 2].point.Add(int.Parse(coordinates[0]));
+                        infoArray[idx / 2].point.Add(int.Parse(coordinates[1]));
+                        Debug.Log(idx / 2 + " idx");
+                    }
+                    idx++;
                 }
             }
         }
 
+        //
+        for(int i = 0; i < infoArray.Length; i++)
+        {
+            Debug.Log(infoArray[i].id);
+            Debug.Log(infoArray[i].region_name);
+            foreach(int a in infoArray[i].point)
+            {
+                Debug.Log(a);
+            }
+            Debug.Log(""); // Add an empty line between each Info object
+        }
     }
 }
