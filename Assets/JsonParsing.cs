@@ -20,6 +20,8 @@ public class Info  //structure
 
 public class JsonParsing : MonoBehaviour
 {
+    public GameObject ObjInstantGameObject; // using call ObjInstantManager Class Function
+
     [SerializeField]
     private Info[] infoArray = new Info[8];
     public void ParseJSONData(string jsonData)
@@ -30,11 +32,9 @@ public class JsonParsing : MonoBehaviour
         // Access the "id" values
         int[] idArray = data.id;
         string[] regionNames = data.region_name;
-        
 
-        // Print the "id" values
-        
-        for(int i = 0; i < idArray.Length ; i++)
+        // assign
+        for (int i = 0; i < idArray.Length ; i++)  
         {
             infoArray[i] = new Info();
             infoArray[i].id = idArray[i].ToString();
@@ -42,6 +42,7 @@ public class JsonParsing : MonoBehaviour
             infoArray[i].point = new List<int>();
         }
 
+        // json 4 point split
         int start = jsonData.IndexOf("[[[");
 
         if (start != -1)
@@ -76,7 +77,7 @@ public class JsonParsing : MonoBehaviour
             }
         }
 
-        //
+        // using Debug
         for(int i = 0; i < infoArray.Length; i++)
         {
             Debug.Log(infoArray[i].id);
@@ -87,5 +88,9 @@ public class JsonParsing : MonoBehaviour
             }
             Debug.Log(""); // Add an empty line between each Info object
         }
+
+        // all Done parsing json data call ObjInstantManager function
+        ObjInstantGameObject.GetComponent<ObjInstantManager>().ObjInstant();
+        // ObjInstant Function in ObjInstantManager Class in ObjInstantGameObject
     }
 }
