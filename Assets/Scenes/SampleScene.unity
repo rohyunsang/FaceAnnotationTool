@@ -1773,6 +1773,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf8c644bd7985634bab3172958eea0fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectanglePrefab: {fileID: 6467952595873649915, guid: c2e234974b6d0e54a85bf07b63ea8ef0, type: 3}
+  SpawnPoint: {fileID: 1614480123}
 --- !u!4 &724512838
 Transform:
   m_ObjectHideFlags: 0
