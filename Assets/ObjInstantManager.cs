@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,21 +11,18 @@ public class ObjInstantManager : MonoBehaviour
         // using Debug
         for (int i = 0; i < infoArray.Length; i++)
         {
-            
-            Debug.Log(infoArray[i].id + " Obj");
-            Debug.Log(infoArray[i].region_name);
+            string logMessage = "";
+
+            logMessage += infoArray[i].id + " Obj, ";
+            logMessage += infoArray[i].region_name + ", ";
             foreach (int a in infoArray[i].point)
             {
-                Debug.Log(a);
+                logMessage += a.ToString() + ", ";
             }
-            Debug.Log(""); // Add an empty line between each Info object
-        }
 
-        // Get the dimensions of the SpawnPoint
-        RectTransform spawnPointRect = SpawnPoint.GetComponent<RectTransform>();
-        float spawnPointWidth = spawnPointRect.rect.width;
-        float spawnPointHeight = spawnPointRect.rect.height;
-        Vector2 spawnPointCenter = new Vector2(spawnPointRect.position.x, spawnPointRect.position.y - spawnPointHeight / 2f);
+            Debug.Log(logMessage);
+
+        }
 
         foreach (Info info in infoArray)
         {
@@ -37,19 +32,30 @@ public class ObjInstantManager : MonoBehaviour
             int x2 = info.point[2];
             int y2 = info.point[3];
 
-            
             // Instantiate a rectangle object from the prefab
             GameObject rectangle = Instantiate(rectanglePrefab, SpawnPoint.transform);
 
+            // Set the parent of the rectangle object
             rectangle.transform.SetParent(SpawnPoint.transform, false);
 
             // Set the size of the rectangle object with scaling
             RectTransform rectTransform = rectangle.GetComponent<RectTransform>();
 
-            // Set other properties of the rectangle object as needed
-            // For example, you can set the ID and region name as text on the UI element
+            // The width and height of the rectangle
+            float rectWidth = x2 - x1;
+            float rectHeight = y2 - y1;
 
+            // The position of the center of the rectangle
+            Vector2 rectCenter = new Vector2(x1 + rectWidth / 2f, y1 + rectHeight / 2f);
+
+            // Set the size and position of the rectangle
+            rectTransform.sizeDelta = new Vector2(rectWidth, rectHeight);
+            rectTransform.anchoredPosition = rectCenter + new Vector2(-404, -270); // here is your offset
+
+            // Set the name of the rectangle object
             rectangle.gameObject.name = info.region_name;
+            rectangle.layer = LayerMask.NameToLayer("UI");
         }
     }
 }
+
