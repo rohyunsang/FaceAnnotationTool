@@ -7,6 +7,8 @@ public class PanelManager : MonoBehaviour
 {
     public GameObject InitPanel;
     public GameObject OptionPanel;
+    public GameObject SavePanel;
+    public GameObject faceField;
 
     public void OnInitPanel()
     {
@@ -16,6 +18,15 @@ public class PanelManager : MonoBehaviour
     public void OnOptionPanel()
     {
         OptionPanel.SetActive(true);
+    }
+    public void OnSavePanel()
+    {
+        SavePanel.SetActive(true);
+    }
+
+    public void OffSavePanel()
+    {
+        SavePanel.SetActive(false);
     }
 
     public void OffInitPanel()
@@ -28,6 +39,12 @@ public class PanelManager : MonoBehaviour
         OptionPanel.SetActive(false);
     }
     
+    public void DeleteObjects()
+    {
+        foreach (Transform child in faceField.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
 
-    
 }
