@@ -55,6 +55,12 @@ public class ObjInstantManager : MonoBehaviour
             // Set the name of the rectangle object
             rectangle.gameObject.name = info.region_name;
             rectangle.layer = LayerMask.NameToLayer("UI");
+
+            Text regionNameText = rectangle.GetComponentInChildren<Text>();
+            if (regionNameText != null)
+            {
+                regionNameText.text = info.region_name;
+            }
         }
     }
 }

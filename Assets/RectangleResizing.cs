@@ -6,12 +6,17 @@ using UnityEngine.UI;
 
 public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDownHandler
 {
+    public GameObject resizeButtonPrefab;
+    public Transform resizeButtonParent;
+
     private RectTransform rectTransform;
     private Vector2 initialMousePosition;
     private Vector2 initialSize;
+    private List<GameObject> resizeButtons = new List<GameObject>(); // list to hold the resize buttons
 
     private bool resizing;
     private float resizeFactor = 0.1f; // Resizing speed control
+    private int cornerIndex;
 
     private void Start()
     {
@@ -20,19 +25,13 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (Input.GetKey(KeyCode.A))
+        if (resizing)
         {
-            if (!resizing)
-            {
-                resizing = true;
-                initialMousePosition = Camera.main.ScreenToWorldPoint(eventData.position);
-                initialSize = rectTransform.sizeDelta;
-            }
             ResizeRectangle(eventData);
+            UpdateResizeButtons();
         }
         else
         {
-            resizing = false;
             rectTransform.anchoredPosition += eventData.delta;
         }
     }
@@ -40,6 +39,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
     public void OnEndDrag(PointerEventData eventData)
     {
         resizing = false;
+        DestroyResizeButtons();
     }
 
     private void ResizeRectangle(PointerEventData eventData)
@@ -52,6 +52,48 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        // Unused for now but you might want to put something here in the future
+        DestroyResizeButtons();
+        CreateResizeButtons();
+    }
+
+    private void CreateResizeButtons()
+    {
+        Vector3[] corners = new Vector3[4];
+        rectTransform.GetWorldCorners(corners);
+
+        for (int i = 0; i < 4; i++)
+        {
+            GameObject button = Instantiate(resizeButtonPrefab, corners[i], Quaternion.identity, resizeButtonParent);
+            button.GetComponent<ResizeButton>().Init(this, i);
+            resizeButtons.Add(button);
+        }
+    }
+
+    public void StartResizing(int cornerIndex)
+    {
+        this.cornerIndex = cornerIndex;
+        this.resizing = true;
+        this.initialMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        this.initialSize = rectTransform.sizeDelta;
+    }
+
+    private void DestroyResizeButtons()
+    {
+        foreach (GameObject button in resizeButtons)
+        {
+            Destroy(button);
+        }
+        resizeButtons.Clear();
+    }
+
+    private void UpdateResizeButtons()
+    {
+        Vector3[] corners = new Vector3[4];
+        rectTransform.GetWorldCorners(corners);
+
+        for (int i = 0; i < 4; i++)
+        {
+            resizeButtons[i].transform.position = corners[i];
+        }
     }
 }
