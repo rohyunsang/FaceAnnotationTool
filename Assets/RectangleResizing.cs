@@ -45,9 +45,29 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
     private void ResizeRectangle(PointerEventData eventData)
     {
         Vector2 delta = (eventData.position - initialMousePosition) * resizeFactor;
-        Vector2 newSize = initialSize + delta;
 
-        rectTransform.sizeDelta = newSize;
+        if (cornerIndex == 0 || cornerIndex == 1) // Left vertices
+        {
+            if(rectTransform.pivot.x == 0)
+            {
+
+            }
+            Vector2 pivotPoint = rectTransform.pivot;
+            pivotPoint.x = 1; // Set pivot to the right side
+            rectTransform.pivot = pivotPoint;
+
+            Vector2 newSize = initialSize - delta;
+            rectTransform.sizeDelta = newSize;
+        }
+        else if (cornerIndex == 2 || cornerIndex == 3) // Right vertices
+        {
+            Vector2 pivotPoint = rectTransform.pivot;
+            pivotPoint.x = 0; // Set pivot to the left side
+            rectTransform.pivot = pivotPoint;
+
+            Vector2 newSize = initialSize + delta;
+            rectTransform.sizeDelta = newSize;
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -60,6 +80,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
     {
         Vector3[] corners = new Vector3[4];
         rectTransform.GetWorldCorners(corners);
+        //Debug.Log(corners);
 
         for (int i = 0; i < 4; i++)
         {
