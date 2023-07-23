@@ -98,8 +98,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 newSize = initialSize + delta;
                 if (previousCornerIndex == LEFT_BOTTOM)
                 {
-                    deltaPosition.x = newSize.x - initialSize.x;
-                    deltaPosition.y = 0;
+                    deltaPosition = initialSize - newSize;
                 }
                 else if (previousCornerIndex == LEFT_TOP)
                 {
@@ -109,8 +108,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 }
                 else if (previousCornerIndex == RIGHT_BOTTOM)
                 {
-                    deltaPosition = initialSize - newSize;
-                    /// this code is wrong
+                    deltaPosition = initialSize - newSize; 
                 }
                 break;
             case RIGHT_BOTTOM:
@@ -126,7 +124,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 }
                 else if (previousCornerIndex == RIGHT_TOP)
                 {
-                    deltaPosition = initialSize - newSize;
+                    deltaPosition.y = initialSize.y - newSize.y;
                 }
                 break;
             default:
@@ -138,7 +136,6 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
         rectTransform.position = oldWorldPosition - deltaPosition;
         previousCornerIndex = cornerIndex;
     }
-
     public void OnPointerDown(PointerEventData eventData)
     {
         DestroyResizeButtons();
