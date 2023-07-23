@@ -3702,7 +3702,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resizeButtonPrefab: {fileID: 0}
-  buttonParent: {fileID: 0}
+  resizeButtonParent: {fileID: 0}
 --- !u!4 &1598540067
 Transform:
   m_ObjectHideFlags: 0
