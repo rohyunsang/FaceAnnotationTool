@@ -90,8 +90,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 }
                 else if (previousCornerIndex == RIGHT_BOTTOM)
                 {
-                    deltaPosition.x = newSize.x - initialSize.x;
-                    deltaPosition.y = 0;
+                    deltaPosition = initialSize - newSize;
                 }
                 break;
             case RIGHT_TOP:
@@ -110,7 +109,8 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 }
                 else if (previousCornerIndex == RIGHT_BOTTOM)
                 {
-                    deltaPosition.y = initialSize.y - newSize.y;
+                    deltaPosition = initialSize - newSize;
+                    /// this code is wrong
                 }
                 break;
             case RIGHT_BOTTOM:
@@ -126,7 +126,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 }
                 else if (previousCornerIndex == RIGHT_TOP)
                 {
-                    deltaPosition.y = initialSize.y - newSize.y;
+                    deltaPosition = initialSize - newSize;
                 }
                 break;
             default:
