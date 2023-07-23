@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,10 +18,13 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
     private bool resizing;
     private float resizeFactor = 0.1f; // Resizing speed control
     private int cornerIndex;
+    private int previousCornerIndex = -1; // New field to keep track of the previously processed corner index
+
 
     private void Start()
     {
         rectTransform = GetComponent<RectTransform>();
+        rectTransform.pivot = new Vector2(1, 0);
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -44,30 +48,87 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
 
     private void ResizeRectangle(PointerEventData eventData)
     {
-        Vector2 delta = (eventData.position - initialMousePosition) * resizeFactor;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, eventData.position, eventData.pressEventCamera, out Vector2 localPointerPosition);
+        Vector2 delta = (localPointerPosition - initialMousePosition) * resizeFactor;
+        Vector2 newSize;
+        Vector3 deltaPosition = Vector3.zero;
 
-        if (cornerIndex == 0 || cornerIndex == 1) // Left vertices
+        switch (cornerIndex)
         {
-            if(rectTransform.pivot.x == 0)
-            {
-
-            }
-            Vector2 pivotPoint = rectTransform.pivot;
-            pivotPoint.x = 1; // Set pivot to the right side
-            rectTransform.pivot = pivotPoint;
-
-            Vector2 newSize = initialSize - delta;
-            rectTransform.sizeDelta = newSize;
+            case 0: // Left bottom
+                rectTransform.pivot = new Vector2(0, 0); // Set pivot to the bottom left
+                newSize = initialSize - delta;
+                if (previousCornerIndex == 1)  //left top
+                {
+                    deltaPosition.y = initialSize.y - newSize.y;
+                }
+                else if (previousCornerIndex == 2) // right top
+                {
+                    deltaPosition = initialSize + newSize;
+                }
+                else if (previousCornerIndex == 3) //right bottom 
+                {
+                    deltaPosition.x = newSize.x - initialSize.x;
+                }
+                break;
+            case 1: // Left top
+                rectTransform.pivot = new Vector2(0, 1); // Set pivot to the top left
+                newSize = initialSize - new Vector2(delta.x, -delta.y);
+                if (previousCornerIndex == 0)
+                {
+                    deltaPosition.y = newSize.y - initialSize.y;
+                }
+                else if (previousCornerIndex == 2)
+                {
+                    deltaPosition.x = initialSize.x - newSize.x;
+                }
+                else if (previousCornerIndex == 3)
+                {
+                    deltaPosition = newSize - initialSize;
+                }
+                break;
+            case 2: // Right top
+                rectTransform.pivot = new Vector2(1, 1); // Set pivot to the top right
+                newSize = initialSize + new Vector2(delta.x, -delta.y);
+                if (previousCornerIndex == 0)
+                {
+                    deltaPosition = newSize - initialSize;
+                }
+                else if (previousCornerIndex == 1)
+                {
+                    deltaPosition.x = newSize.x - initialSize.x;
+                }
+                else if (previousCornerIndex == 3)
+                {
+                    deltaPosition.y = newSize.y - initialSize.y;
+                }
+                break;
+            case 3: // Right bottom
+                rectTransform.pivot = new Vector2(1, 0); // Set pivot to the bottom right
+                newSize = initialSize + delta;
+                if (previousCornerIndex == 0)
+                {
+                    deltaPosition.x = initialSize.x - newSize.x;
+                }
+                else if (previousCornerIndex == 1)
+                {
+                    deltaPosition = initialSize - newSize;
+                }
+                else if (previousCornerIndex == 2)
+                {
+                    deltaPosition.y = initialSize.y - newSize.y;
+                }
+                break;
+            default:
+                throw new ArgumentException($"Unexpected corner index {cornerIndex}");
         }
-        else if (cornerIndex == 2 || cornerIndex == 3) // Right vertices
-        {
-            Vector2 pivotPoint = rectTransform.pivot;
-            pivotPoint.x = 0; // Set pivot to the left side
-            rectTransform.pivot = pivotPoint;
 
-            Vector2 newSize = initialSize + delta;
-            rectTransform.sizeDelta = newSize;
-        }
+        Vector3 oldWorldPosition = rectTransform.position;
+        rectTransform.sizeDelta = newSize;
+
+        rectTransform.position = oldWorldPosition - deltaPosition;
+
+        previousCornerIndex = cornerIndex; // Update the previous corner index after processing the current one
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -76,22 +137,30 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
         CreateResizeButtons();
     }
 
+    private IEnumerator NoInteractionCoroutine(GameObject button)
+    {
+        yield return new WaitForSeconds(2f);
+        Destroy(button);
+        resizeButtons.Remove(button);
+    }
+
     private void CreateResizeButtons()
     {
         Vector3[] corners = new Vector3[4];
         rectTransform.GetWorldCorners(corners);
-        //Debug.Log(corners);
 
         for (int i = 0; i < 4; i++)
         {
             GameObject button = Instantiate(resizeButtonPrefab, corners[i], Quaternion.identity, resizeButtonParent);
             button.GetComponent<ResizeButton>().Init(this, i);
             resizeButtons.Add(button);
+            StartCoroutine(NoInteractionCoroutine(button));
         }
     }
 
     public void StartResizing(int cornerIndex)
     {
+        StopAllCoroutines();
         this.cornerIndex = cornerIndex;
         this.resizing = true;
         this.initialMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -100,6 +169,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
 
     private void DestroyResizeButtons()
     {
+        StopAllCoroutines();
         foreach (GameObject button in resizeButtons)
         {
             Destroy(button);
