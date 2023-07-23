@@ -59,7 +59,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
         switch (cornerIndex)
         {
             case LEFT_BOTTOM:
-                rectTransform.pivot = new Vector2(0, 0);
+                rectTransform.pivot = new Vector2(1, 1);
                 newSize = initialSize + delta;
                 if (previousCornerIndex == LEFT_TOP)
                 {
@@ -76,7 +76,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 }
                 break;
             case LEFT_TOP:
-                rectTransform.pivot = new Vector2(0, 1);
+                rectTransform.pivot = new Vector2(1, 0);
                 newSize = initialSize + delta;
                 if (previousCornerIndex == LEFT_BOTTOM)
                 {
@@ -94,7 +94,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 }
                 break;
             case RIGHT_TOP:
-                rectTransform.pivot = new Vector2(1, 1);
+                rectTransform.pivot = new Vector2(0, 0);
                 newSize = initialSize + delta;
                 if (previousCornerIndex == LEFT_BOTTOM)
                 {
@@ -112,7 +112,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 }
                 break;
             case RIGHT_BOTTOM:
-                rectTransform.pivot = new Vector2(1, 0);
+                rectTransform.pivot = new Vector2(0, 1);
                 newSize = initialSize + delta;
                 if (previousCornerIndex == LEFT_BOTTOM)
                 {
@@ -133,7 +133,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
 
         Vector3 oldWorldPosition = rectTransform.position;
         rectTransform.sizeDelta = newSize;
-        rectTransform.position = oldWorldPosition - deltaPosition;
+        rectTransform.position = oldWorldPosition + deltaPosition;
         previousCornerIndex = cornerIndex;
     }
     public void OnPointerDown(PointerEventData eventData)
