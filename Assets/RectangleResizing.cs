@@ -20,7 +20,10 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
     private int cornerIndex;
     private int previousCornerIndex = -1; // New field to keep track of the previously processed corner index
 
-
+    private const int LEFT_BOTTOM = 0;
+    private const int LEFT_TOP = 1;
+    private const int RIGHT_TOP = 2;
+    private const int RIGHT_BOTTOM = 3;
     private void Start()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -55,66 +58,73 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
 
         switch (cornerIndex)
         {
-            case 0: // Left bottom
-                rectTransform.pivot = new Vector2(0, 0); // Set pivot to the bottom left
-                newSize = initialSize - delta;
-                if (previousCornerIndex == 1)  //left top
+            case LEFT_BOTTOM:
+                rectTransform.pivot = new Vector2(0, 0);
+                newSize = initialSize + delta;
+                if (previousCornerIndex == LEFT_TOP)
                 {
                     deltaPosition.y = initialSize.y - newSize.y;
                 }
-                else if (previousCornerIndex == 2) // right top
-                {
-                    deltaPosition = initialSize + newSize;
-                }
-                else if (previousCornerIndex == 3) //right bottom 
-                {
-                    deltaPosition.x = newSize.x - initialSize.x;
-                }
-                break;
-            case 1: // Left top
-                rectTransform.pivot = new Vector2(0, 1); // Set pivot to the top left
-                newSize = initialSize - new Vector2(delta.x, -delta.y);
-                if (previousCornerIndex == 0)
-                {
-                    deltaPosition.y = newSize.y - initialSize.y;
-                }
-                else if (previousCornerIndex == 2)
-                {
-                    deltaPosition.x = initialSize.x - newSize.x;
-                }
-                else if (previousCornerIndex == 3)
-                {
-                    deltaPosition = newSize - initialSize;
-                }
-                break;
-            case 2: // Right top
-                rectTransform.pivot = new Vector2(1, 1); // Set pivot to the top right
-                newSize = initialSize + new Vector2(delta.x, -delta.y);
-                if (previousCornerIndex == 0)
-                {
-                    deltaPosition = newSize - initialSize;
-                }
-                else if (previousCornerIndex == 1)
-                {
-                    deltaPosition.x = newSize.x - initialSize.x;
-                }
-                else if (previousCornerIndex == 3)
-                {
-                    deltaPosition.y = newSize.y - initialSize.y;
-                }
-                break;
-            case 3: // Right bottom
-                rectTransform.pivot = new Vector2(1, 0); // Set pivot to the bottom right
-                newSize = initialSize + delta;
-                if (previousCornerIndex == 0)
-                {
-                    deltaPosition.x = initialSize.x - newSize.x;
-                }
-                else if (previousCornerIndex == 1)
+                else if (previousCornerIndex == RIGHT_TOP)
                 {
                     deltaPosition = initialSize - newSize;
                 }
-                else if (previousCornerIndex == 2)
+                else if (previousCornerIndex == RIGHT_BOTTOM)
+                {
+                    deltaPosition.x = newSize.x - initialSize.x;
+                    deltaPosition.x *= -1;
+                }
+                break;
+            case LEFT_TOP:
+                rectTransform.pivot = new Vector2(0, 1);
+                newSize = initialSize + delta;
+                if (previousCornerIndex == LEFT_BOTTOM)
+                {
+                    deltaPosition.y = initialSize.y - newSize.y;
+                }
+                else if (previousCornerIndex == RIGHT_TOP)
+                {
+                    deltaPosition.x = newSize.x - initialSize.x;
+                    deltaPosition.y = 0;
+                    deltaPosition *= -1;
+                }
+                else if (previousCornerIndex == RIGHT_BOTTOM)
+                {
+                    deltaPosition.x = newSize.x - initialSize.x;
+                    deltaPosition.y = 0;
+                }
+                break;
+            case RIGHT_TOP:
+                rectTransform.pivot = new Vector2(1, 1);
+                newSize = initialSize + delta;
+                if (previousCornerIndex == LEFT_BOTTOM)
+                {
+                    deltaPosition.x = newSize.x - initialSize.x;
+                    deltaPosition.y = 0;
+                }
+                else if (previousCornerIndex == LEFT_TOP)
+                {
+                    deltaPosition.x = newSize.x - initialSize.x;
+                    deltaPosition.y = 0;
+                    deltaPosition *= -1;
+                }
+                else if (previousCornerIndex == RIGHT_BOTTOM)
+                {
+                    deltaPosition.y = initialSize.y - newSize.y;
+                }
+                break;
+            case RIGHT_BOTTOM:
+                rectTransform.pivot = new Vector2(1, 0);
+                newSize = initialSize + delta;
+                if (previousCornerIndex == LEFT_BOTTOM)
+                {
+                    deltaPosition.x = initialSize.x - newSize.x;
+                }
+                else if (previousCornerIndex == LEFT_TOP)
+                {
+                    deltaPosition = initialSize - newSize;
+                }
+                else if (previousCornerIndex == RIGHT_TOP)
                 {
                     deltaPosition.y = initialSize.y - newSize.y;
                 }
@@ -125,10 +135,8 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
 
         Vector3 oldWorldPosition = rectTransform.position;
         rectTransform.sizeDelta = newSize;
-
         rectTransform.position = oldWorldPosition - deltaPosition;
-
-        previousCornerIndex = cornerIndex; // Update the previous corner index after processing the current one
+        previousCornerIndex = cornerIndex;
     }
 
     public void OnPointerDown(PointerEventData eventData)
