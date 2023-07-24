@@ -60,7 +60,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
         {
             case LEFT_BOTTOM:
                 rectTransform.pivot = new Vector2(1, 1);
-                newSize = initialSize + delta;
+                newSize = initialSize - delta;
                 if (previousCornerIndex == LEFT_TOP)
                 {
                     deltaPosition.y = initialSize.y - newSize.y;
@@ -72,12 +72,13 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 else if (previousCornerIndex == RIGHT_BOTTOM)
                 {
                     deltaPosition.x = newSize.x - initialSize.x;
-                    deltaPosition.x *= -1;
+                    //deltaPosition.x *= -1;
                 }
                 break;
             case LEFT_TOP:
                 rectTransform.pivot = new Vector2(1, 0);
-                newSize = initialSize + delta;
+                delta.y *= -1; // scale
+                newSize = initialSize - delta;
                 if (previousCornerIndex == LEFT_BOTTOM)
                 {
                     deltaPosition.y = initialSize.y - newSize.y;
@@ -108,15 +109,17 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 }
                 else if (previousCornerIndex == RIGHT_BOTTOM)
                 {
-                    deltaPosition = initialSize - newSize; 
+                    deltaPosition = initialSize - newSize;
                 }
                 break;
             case RIGHT_BOTTOM:
                 rectTransform.pivot = new Vector2(0, 1);
+                delta.y *= -1; // delta의 y 성분을 반전
                 newSize = initialSize + delta;
                 if (previousCornerIndex == LEFT_BOTTOM)
                 {
                     deltaPosition.x = initialSize.x - newSize.x;
+                    deltaPosition.x *= -1;
                 }
                 else if (previousCornerIndex == LEFT_TOP)
                 {
