@@ -16,7 +16,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
     private List<GameObject> resizeButtons = new List<GameObject>(); // list to hold the resize buttons
 
     private bool resizing;
-    private float resizeFactor = 0.1f; // Resizing speed control
+    private float resizeFactor = 0.3f; // Resizing speed control
     private int cornerIndex;
     private int previousCornerIndex = -1; // New field to keep track of the previously processed corner index
 
@@ -61,18 +61,17 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
             case LEFT_BOTTOM:
                 rectTransform.pivot = new Vector2(1, 1);
                 newSize = initialSize - delta;
-                if (previousCornerIndex == LEFT_TOP)
+                if (previousCornerIndex == LEFT_TOP) // left_top pivot is 1,0 
                 {
-                    deltaPosition.y = initialSize.y - newSize.y;
+                    deltaPosition.x = initialSize.x - newSize.x;
                 }
                 else if (previousCornerIndex == RIGHT_TOP)
                 {
-                    deltaPosition = initialSize - newSize;
+                    deltaPosition.x = newSize.x - initialSize.x;
                 }
                 else if (previousCornerIndex == RIGHT_BOTTOM)
                 {
-                    deltaPosition.x = newSize.x - initialSize.x;
-                    //deltaPosition.x *= -1;
+                    deltaPosition.x = initialSize.x - newSize.x;
                 }
                 break;
             case LEFT_TOP:
@@ -81,17 +80,15 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 newSize = initialSize - delta;
                 if (previousCornerIndex == LEFT_BOTTOM)
                 {
-                    deltaPosition.y = initialSize.y - newSize.y;
+                    deltaPosition.x = newSize.x - initialSize.x;
                 }
                 else if (previousCornerIndex == RIGHT_TOP)
                 {
-                    deltaPosition.x = newSize.x - initialSize.x;
-                    deltaPosition.y = 0;
-                    deltaPosition *= -1;
+                    deltaPosition.x = initialSize.x - newSize.x;
                 }
                 else if (previousCornerIndex == RIGHT_BOTTOM)
                 {
-                    deltaPosition = initialSize - newSize;
+                    deltaPosition.x = initialSize.x - newSize.x;
                 }
                 break;
             case RIGHT_TOP:
@@ -99,17 +96,15 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 newSize = initialSize + delta;
                 if (previousCornerIndex == LEFT_BOTTOM)
                 {
-                    deltaPosition = initialSize - newSize;
+                    deltaPosition.x = initialSize.x - newSize.x;
                 }
                 else if (previousCornerIndex == LEFT_TOP)
                 {
-                    deltaPosition.x = newSize.x - initialSize.x;
-                    deltaPosition.y = 0;
-                    deltaPosition *= -1;
+                    deltaPosition.x = initialSize.x - newSize.x;
                 }
                 else if (previousCornerIndex == RIGHT_BOTTOM)
                 {
-                    deltaPosition = initialSize - newSize;
+                    deltaPosition.x = initialSize.x - newSize.x;
                 }
                 break;
             case RIGHT_BOTTOM:
@@ -119,15 +114,14 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 if (previousCornerIndex == LEFT_BOTTOM)
                 {
                     deltaPosition.x = initialSize.x - newSize.x;
-                    deltaPosition.x *= -1;
                 }
                 else if (previousCornerIndex == LEFT_TOP)
                 {
-                    deltaPosition = initialSize - newSize;
+                    deltaPosition.x = initialSize.x - newSize.x;
                 }
                 else if (previousCornerIndex == RIGHT_TOP)
                 {
-                    deltaPosition.y = initialSize.y - newSize.y;
+                    deltaPosition.x = initialSize.x - newSize.x;
                 }
                 break;
             default:
