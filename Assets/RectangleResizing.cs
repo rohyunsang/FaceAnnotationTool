@@ -63,15 +63,16 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 newSize = initialSize - delta;
                 if (previousCornerIndex == LEFT_TOP) // left_top pivot is 1,0 
                 {
-                    deltaPosition.x = initialSize.x - newSize.x;
+                    deltaPosition.y = rectTransform.rect.height;
                 }
-                else if (previousCornerIndex == RIGHT_TOP)
+                else if (previousCornerIndex == RIGHT_TOP) // pivot is 0,0
                 {
-                    deltaPosition.x = newSize.x - initialSize.x;
+                    deltaPosition.x = rectTransform.rect.width;
+                    deltaPosition.y = rectTransform.rect.height;
                 }
-                else if (previousCornerIndex == RIGHT_BOTTOM)
+                else if (previousCornerIndex == RIGHT_BOTTOM) // pivot is 1,0
                 {
-                    deltaPosition.x = initialSize.x - newSize.x;
+                    deltaPosition.x = rectTransform.rect.width;
                 }
                 break;
             case LEFT_TOP:
@@ -80,15 +81,16 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 newSize = initialSize - delta;
                 if (previousCornerIndex == LEFT_BOTTOM)
                 {
-                    deltaPosition.x = newSize.x - initialSize.x;
+                    deltaPosition.y = -rectTransform.rect.height;
                 }
                 else if (previousCornerIndex == RIGHT_TOP)
                 {
-                    deltaPosition.x = initialSize.x - newSize.x;
+                    deltaPosition.x = rectTransform.rect.width;
                 }
                 else if (previousCornerIndex == RIGHT_BOTTOM)
                 {
-                    deltaPosition.x = initialSize.x - newSize.x;
+                    deltaPosition.x = rectTransform.rect.width;
+                    deltaPosition.y = -rectTransform.rect.height;
                 }
                 break;
             case RIGHT_TOP:
@@ -96,15 +98,16 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 newSize = initialSize + delta;
                 if (previousCornerIndex == LEFT_BOTTOM)
                 {
-                    deltaPosition.x = initialSize.x - newSize.x;
+                    deltaPosition.x = -rectTransform.rect.width;
+                    deltaPosition.y = -rectTransform.rect.height;
                 }
                 else if (previousCornerIndex == LEFT_TOP)
                 {
-                    deltaPosition.x = initialSize.x - newSize.x;
+                    deltaPosition.x = -rectTransform.rect.width;
                 }
                 else if (previousCornerIndex == RIGHT_BOTTOM)
                 {
-                    deltaPosition.x = initialSize.x - newSize.x;
+                    deltaPosition.y = -rectTransform.rect.height;
                 }
                 break;
             case RIGHT_BOTTOM:
@@ -113,24 +116,25 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 newSize = initialSize + delta;
                 if (previousCornerIndex == LEFT_BOTTOM)
                 {
-                    deltaPosition.x = initialSize.x - newSize.x;
+                    deltaPosition.x = -rectTransform.rect.width;
                 }
                 else if (previousCornerIndex == LEFT_TOP)
                 {
-                    deltaPosition.x = initialSize.x - newSize.x;
+                    deltaPosition.x = -rectTransform.rect.width;
+                    deltaPosition.y = rectTransform.rect.height;
                 }
                 else if (previousCornerIndex == RIGHT_TOP)
                 {
-                    deltaPosition.x = initialSize.x - newSize.x;
+                    deltaPosition.y = rectTransform.rect.height;
                 }
                 break;
             default:
                 throw new ArgumentException($"Unexpected corner index {cornerIndex}");
         }
 
-        Vector3 oldWorldPosition = rectTransform.position;
+        Vector3 oldWorldPosition = rectTransform.localPosition;
         rectTransform.sizeDelta = newSize;
-        rectTransform.position = oldWorldPosition + deltaPosition;
+        rectTransform.localPosition = oldWorldPosition + deltaPosition;
         previousCornerIndex = cornerIndex;
     }
     public void OnPointerDown(PointerEventData eventData)
