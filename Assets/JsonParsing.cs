@@ -21,9 +21,14 @@ public class Info  //structure
 public class JsonParsing : MonoBehaviour
 {
     public GameObject ObjInstantGameObject; // using call ObjInstantManager Class Function
-
+    public List<string> jsonDatas = new List<string>();
     [SerializeField]
     private Info[] infoArray = new Info[8];
+
+    public void MakeJsonArray(string jsonData)
+    {
+        jsonDatas.Add(jsonData);
+    }
     public void ParseJSONData(string jsonData)
     {
         // Deserialize the JSON data into the JSONData object
