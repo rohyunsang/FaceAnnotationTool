@@ -15,6 +15,7 @@ public class RectangleData
 public class JsonSerialization : MonoBehaviour
 {
     public GameObject faceField;
+    int idx = 0;
 
     public void SaveBtn()
     {
@@ -34,9 +35,19 @@ public class JsonSerialization : MonoBehaviour
 
         string json = JsonUtility.ToJson(new SerializableList<RectangleData> { list = rectangleList }, true);
         string desktopPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop);
-        File.WriteAllText(desktopPath + "/faceField.json", json);
-
+        File.WriteAllText(desktopPath + "/faceField" + idx.ToString() +".json", json);  //naming
+        idx++;
         Debug.Log("Complete");
+        DeleteRectangles();
+
+    }
+
+    public void DeleteRectangles()
+    {
+        foreach (Transform child in faceField.transform)
+        {
+            Destroy(child.gameObject);
+        }
     }
 }
 
