@@ -11,10 +11,6 @@ public class FileBrowserTest : MonoBehaviour
     
     public GameObject jsonManager;
 
-    void Start()
-    {
-    }
-
     public void ShowFileBrowser()
     {
         FileBrowser.SetFilters(true, new FileBrowser.Filter("Files", ".jpg", ".png", ".json"), new FileBrowser.Filter("Text Files", ".txt", ".pdf"));
@@ -56,13 +52,6 @@ public class FileBrowserTest : MonoBehaviour
                         jsonManager.GetComponent<JsonParsing>().MakeImageStringArray(bytes);
                     }
                 }
-                else if (extension.ToLower() == ".jpg")  //jpg file
-                {
-                    byte[] bytes = FileBrowserHelpers.ReadBytesFromFile(FileBrowser.Result[i]);
-
-                    
-                }
-                
 
                 string destinationPath = Path.Combine(Application.persistentDataPath, FileBrowserHelpers.GetFilename(FileBrowser.Result[i]));
                 FileBrowserHelpers.CopyFile(FileBrowser.Result[i], destinationPath);
