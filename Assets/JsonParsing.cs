@@ -36,8 +36,8 @@ public class JsonParsing : MonoBehaviour
 
     [SerializeField]
     public List<GameObjectList> jsonSquares = new List<GameObjectList>();
-
     public List<Texture2D> imageDatas = new List<Texture2D>();
+
     [SerializeField]
     private Info[] infoArray = new Info[8];
 
@@ -47,6 +47,30 @@ public class JsonParsing : MonoBehaviour
     public Transform scrollView;
     public Transform scrollViewInitPanel;
 
+    public GameObject failWindow;
+
+    public void CheckingFileCount()
+    {
+        if(jsonSquares.Count == imageDatas.Count && jsonSquares.Count != 0)
+        {
+            InitPortrait();
+        }
+        else
+        {
+            failWindow.SetActive(true);
+            Invoke("FailWindowSetActiveFalse", 3f);
+            jsonSquares.Clear();
+            imageDatas.Clear();
+            foreach (Transform child in faceImage.transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+    }
+    private void FailWindowSetActiveFalse()
+    {
+        failWindow.SetActive(false);
+    }
     public void Portrait()
     {
         for(int i = 0; i < imageDatas.Count; i++)
