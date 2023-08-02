@@ -16,7 +16,7 @@ public class ResizeButton : MonoBehaviour, IDragHandler, IEndDragHandler, IPoint
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        rectangleResizing.StartResizing(cornerIndex);
+        rectangleResizing.StartResizing(cornerIndex, eventData);
     }
 
     public void OnDrag(PointerEventData eventData)
