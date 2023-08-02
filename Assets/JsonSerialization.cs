@@ -1,7 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.IO;
+using UnityEngine;
 
 [System.Serializable]
 public class RectangleData
@@ -14,16 +13,17 @@ public class RectangleData
 
 public class JsonSerialization : MonoBehaviour
 {
-    public GameObject faceField;
-    int idx = 0;
+    public GameObject jsonParsingObj;
+    public GameObject parentPortraits;
 
     public void SaveBtn()
     {
         List<RectangleData> rectangleList = new List<RectangleData>();
+        int idx = jsonParsingObj.GetComponent<JsonParsing>().idx;
+        GameObjectList gameObjectList = jsonParsingObj.GetComponent<JsonParsing>().jsonSquares[idx];
 
-        for (int i = 0; i < faceField.transform.childCount; i++)
+        foreach (GameObject child in gameObjectList.gameObjects)
         {
-            GameObject child = faceField.transform.GetChild(i).gameObject;
             RectTransform rectTransform = child.GetComponent<RectTransform>();
             RectangleData rectangleData = new RectangleData();
             rectangleData.name = child.name;
@@ -35,19 +35,11 @@ public class JsonSerialization : MonoBehaviour
 
         string json = JsonUtility.ToJson(new SerializableList<RectangleData> { list = rectangleList }, true);
         string desktopPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop);
-        File.WriteAllText(desktopPath + "/faceField" + idx.ToString() +".json", json);  //naming
-        idx++;
+        File.WriteAllText(desktopPath + "/faceField" + idx.ToString() + ".json", json);
         Debug.Log("Complete");
-        DeleteRectangles();
 
-    }
-
-    public void DeleteRectangles()
-    {
-        foreach (Transform child in faceField.transform)
-        {
-            Destroy(child.gameObject);
-        }
+        Transform childTransform = parentPortraits.transform.Find(idx.ToString());
+        childTransform.gameObject.GetComponent<Portrait>().checkingImage.SetActive(true);
     }
 }
 
