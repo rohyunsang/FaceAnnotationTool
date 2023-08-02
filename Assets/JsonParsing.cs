@@ -20,6 +20,12 @@ public class Info  //structure
     public List<int> point;
 }
 
+[System.Serializable]
+public class GameObjectList
+{
+    public List<GameObject> gameObjects = new List<GameObject>();
+}
+
 public class JsonParsing : MonoBehaviour
 {
     public GameObject PanelManagerObj;
@@ -28,14 +34,31 @@ public class JsonParsing : MonoBehaviour
 
     public GameObject WorkEndImage;
 
-    public List<string> jsonDatas = new List<string>();
+    [SerializeField]
+    public List<GameObjectList> jsonSquares = new List<GameObjectList>();
+
     public List<Texture2D> imageDatas = new List<Texture2D>();
     [SerializeField]
     private Info[] infoArray = new Info[8];
-    int idx = 0;
+
+    public int idx = 0;
+
+    public GameObject portraitPrefab;
+    public Transform scrollView;
+
+    public void Portrait()
+    {
+        for(int i = 0; i < imageDatas.Count; i++)
+        {
+            GameObject portraitInstance = Instantiate(portraitPrefab, scrollView.transform);
+            portraitInstance.name = i.ToString();
+            portraitInstance.GetComponent<Image>().sprite = Sprite.Create(imageDatas[i], new Rect(0, 0, imageDatas[i].width, imageDatas[i].height), Vector2.one * 0.5f);
+        }
+    }
+
     public void MakeJsonArray(string jsonData)
     {
-        jsonDatas.Add(jsonData);
+        ParseJSONData(jsonData);
     }
     public void MakeImageStringArray(byte[] bytes)
     {
@@ -44,27 +67,26 @@ public class JsonParsing : MonoBehaviour
         texture.LoadImage(bytes);
         imageDatas.Add(texture);
     }
-
-    public void QueueManager() // using btn;
+    public void RectanglesSetActiveFalse()
     {
-        if (jsonDatas.Count != imageDatas.Count)
-            Debug.Log("이미지와 데이터의 개수가 맞지 않습니다.");
-
-        if(jsonDatas.Count == idx)
+        foreach(GameObjectList gameObjectList in jsonSquares)
         {
-            WorkEndImage.SetActive(true);
-            jsonDatas.Clear();
-            imageDatas.Clear();
-            idx = 0;
-            StartCoroutine(InitPanelWithDelay(2f)); // start a coroutine to call OnInitPanel() after 2 seconds
-        }
-        else
-        {
-            ParseJSONData(jsonDatas[idx]);
-            faceImage.texture = imageDatas[idx];
-            idx++;
+            for(int i = 0; i < gameObjectList.gameObjects.Count; i++)
+            {
+                gameObjectList.gameObjects.ForEach(square => square.SetActive(false));
+            }
         }
     }
+    public void QueueManager(int idx) // using btn;
+    {
+        jsonSquares[this.idx].gameObjects.ForEach(square => square.SetActive(false));
+        this.idx = idx;
+        // 1. 사진을 클릭하면 idx를 기준으로 jsonSquare과 이미지를 뛰운다. 
+        jsonSquares[this.idx].gameObjects.ForEach(square => square.SetActive(true));
+        faceImage.texture = imageDatas[this.idx];
+    }
+
+    
     private IEnumerator InitPanelWithDelay(float delay)
     {
         yield return new WaitForSeconds(delay); // wait for delay seconds
