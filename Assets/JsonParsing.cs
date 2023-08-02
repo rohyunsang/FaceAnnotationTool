@@ -45,16 +45,30 @@ public class JsonParsing : MonoBehaviour
 
     public GameObject portraitPrefab;
     public Transform scrollView;
+    public Transform scrollViewInitPanel;
 
     public void Portrait()
     {
         for(int i = 0; i < imageDatas.Count; i++)
         {
-            GameObject portraitInstance = Instantiate(portraitPrefab, scrollView.transform);
-            portraitInstance.name = i.ToString();
-            portraitInstance.GetComponent<Image>().sprite = Sprite.Create(imageDatas[i], new Rect(0, 0, imageDatas[i].width, imageDatas[i].height), Vector2.one * 0.5f);
+            GameObject portraitInstanceA = Instantiate(portraitPrefab, scrollView.transform);
+            portraitInstanceA.name = i.ToString();
+            portraitInstanceA.GetComponent<Image>().sprite = Sprite.Create(imageDatas[i], new Rect(0, 0, imageDatas[i].width, imageDatas[i].height), Vector2.one * 0.5f);
         }
     }
+    public void InitPortrait()
+    {
+        Debug.Log("InitPortrait");
+        for (int i = 0; i < imageDatas.Count; i++)
+        {
+            GameObject portraitInstanceB = Instantiate(portraitPrefab, scrollViewInitPanel.transform);
+            portraitInstanceB.name = i.ToString();
+            portraitInstanceB.GetComponent<Image>().sprite = Sprite.Create(imageDatas[i], new Rect(0, 0, imageDatas[i].width, imageDatas[i].height), Vector2.one * 0.5f);
+            Destroy(portraitInstanceB.GetComponent<Button>());
+        }
+    }
+
+
 
     public void MakeJsonArray(string jsonData)
     {
@@ -84,14 +98,6 @@ public class JsonParsing : MonoBehaviour
         // 1. 사진을 클릭하면 idx를 기준으로 jsonSquare과 이미지를 뛰운다. 
         jsonSquares[this.idx].gameObjects.ForEach(square => square.SetActive(true));
         faceImage.texture = imageDatas[this.idx];
-    }
-
-    
-    private IEnumerator InitPanelWithDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay); // wait for delay seconds
-        PanelManagerObj.GetComponent<PanelManager>().OnInitPanel();
-        WorkEndImage.SetActive(false);
     }
 
 
