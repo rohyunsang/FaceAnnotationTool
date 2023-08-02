@@ -47,7 +47,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
     {
         RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, eventData.position, eventData.pressEventCamera, out Vector2 localPointerPosition);
         Vector2 delta = (localPointerPosition - initialMousePosition);
-        Debug.Log(localPointerPosition + "localPointerPosition" + initialMousePosition + " inititalMousePosition");
+        Debug.Log("localPointerPosition: "+  localPointerPosition +  " inititalMousePosition: " + initialMousePosition);
         Vector2 newSize;
         Vector3 deltaPosition = Vector3.zero;
 
@@ -60,16 +60,18 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 if (previousCornerIndex == LEFT_TOP) // left_top pivot is 1,0 
                 {
                     deltaPosition.y = rectTransform.rect.height;
+                    initialMousePosition.y -= deltaPosition.y;
                 }
                 else if (previousCornerIndex == RIGHT_TOP) // pivot is 0,0
                 {
                     deltaPosition.x = rectTransform.rect.width;
                     deltaPosition.y = rectTransform.rect.height;
-
+                    initialMousePosition -= new Vector2(deltaPosition.x, deltaPosition.y);
                 }
                 else if (previousCornerIndex == RIGHT_BOTTOM) // pivot is 1,0
                 {
                     deltaPosition.x = rectTransform.rect.width;
+                    initialMousePosition.x -= deltaPosition.x;
                 }
                 
                 break;
@@ -80,18 +82,20 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 if (previousCornerIndex == LEFT_BOTTOM)
                 {
                     deltaPosition.y = -rectTransform.rect.height;
-                     
+                    initialMousePosition.y -= deltaPosition.y;
                 }
                 else if (previousCornerIndex == RIGHT_TOP)
                 {
                     deltaPosition.x = rectTransform.rect.width;
-                     
+                    initialMousePosition.x -= deltaPosition.x;
+
                 }
                 else if (previousCornerIndex == RIGHT_BOTTOM)
                 {
                     deltaPosition.x = rectTransform.rect.width;
                     deltaPosition.y = -rectTransform.rect.height;
-                     
+                    initialMousePosition.x -= deltaPosition.x;
+                    initialMousePosition.y -= deltaPosition.y;
                 }
                 
                 break;
@@ -102,17 +106,17 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 {
                     deltaPosition.x = -rectTransform.rect.width;
                     deltaPosition.y = -rectTransform.rect.height;
-                     
+                    initialMousePosition -= new Vector2(deltaPosition.x, deltaPosition.y);
                 }
                 else if (previousCornerIndex == LEFT_TOP)
                 {
                     deltaPosition.x = -rectTransform.rect.width;
-                     
+                    initialMousePosition.x -= deltaPosition.x;
                 }
                 else if (previousCornerIndex == RIGHT_BOTTOM)
                 {
                     deltaPosition.y = -rectTransform.rect.height;
-                     
+                    initialMousePosition.y -= deltaPosition.y;
                 }
                 
                 break;
@@ -123,18 +127,20 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                 if (previousCornerIndex == LEFT_BOTTOM)
                 {
                     deltaPosition.x = -rectTransform.rect.width;
-                    
+                    initialMousePosition.x -= deltaPosition.x;
+
                 }
                 else if (previousCornerIndex == LEFT_TOP)
                 {
                     deltaPosition.x = -rectTransform.rect.width;
                     deltaPosition.y = rectTransform.rect.height;
-                     
+                    initialMousePosition.x -= deltaPosition.x;
+                    initialMousePosition.y -= deltaPosition.y;
                 }
                 else if (previousCornerIndex == RIGHT_TOP)
                 {
                     deltaPosition.y = rectTransform.rect.height;
-                     
+                    initialMousePosition.y -= deltaPosition.y;
                 }
                 
                 break;
