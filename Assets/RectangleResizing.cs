@@ -147,6 +147,8 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
             default:
                 throw new ArgumentException($"Unexpected corner index {cornerIndex}");
         }
+        newSize.x = Mathf.Max(newSize.x, 50); // 최소 너비
+        newSize.y = Mathf.Max(newSize.y, 50); // 최소 높이
 
         Vector3 oldWorldPosition = rectTransform.localPosition;
         
