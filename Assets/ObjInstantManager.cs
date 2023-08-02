@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,9 +6,12 @@ public class ObjInstantManager : MonoBehaviour
 {
     public GameObject rectanglePrefab;
     public RawImage SpawnPoint;
-
+    public GameObject JsonParsingObj;
+    
     public void ObjInstant(Info[] infoArray)
     {
+        GameObjectList gameObjectList = new GameObjectList();
+        List<GameObject> newRectangles = new List<GameObject>();
         // using Debug
         for (int i = 0; i < infoArray.Length; i++)
         {
@@ -23,7 +27,7 @@ public class ObjInstantManager : MonoBehaviour
             Debug.Log(logMessage);
 
         }
-
+        
         foreach (Info info in infoArray)
         {
             // Extract the points from the info object
@@ -61,7 +65,13 @@ public class ObjInstantManager : MonoBehaviour
             {
                 regionNameText.text = info.region_name;
             }
+
+            newRectangles.Add(rectangle);
+            gameObjectList.gameObjects = newRectangles;
+            
         }
+        JsonParsingObj.GetComponent<JsonParsing>().jsonSquares.Add(gameObjectList);
+
     }
 }
 
