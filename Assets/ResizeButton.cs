@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
+using System.Drawing;
 
-public class ResizeButton : MonoBehaviour, IDragHandler, IPointerDownHandler
+public class ResizeButton : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDownHandler
 {
     public RectangleResizing rectangleResizing;
     private int cornerIndex;
@@ -19,6 +21,12 @@ public class ResizeButton : MonoBehaviour, IDragHandler, IPointerDownHandler
 
     public void OnDrag(PointerEventData eventData)
     {
-        rectangleResizing.OnDrag(eventData);
+        rectangleResizing.ResizeRectangle(eventData); // 호출 추가
+        rectangleResizing.UpdateResizeButtons(); // 버튼 위치 업데이트
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        rectangleResizing.DestroyResizeButtons();
     }
 }
