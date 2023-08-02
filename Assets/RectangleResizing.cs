@@ -15,10 +15,10 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
     private Vector2 initialSize;
     private List<GameObject> resizeButtons = new List<GameObject>(); // list to hold the resize buttons
 
-    private bool resizing;
+    public bool resizing;
     private float resizeFactor = 0.3f; // Resizing speed control
     private int cornerIndex;
-    private int previousCornerIndex = -1; // New field to keep track of the previously processed corner index
+    private int previousCornerIndex = 1; // New field to keep track of the previously processed corner index
 
     private const int LEFT_BOTTOM = 0;
     private const int LEFT_TOP = 1;
@@ -32,24 +32,17 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (resizing)
-        {
-            ResizeRectangle(eventData);
-            UpdateResizeButtons();
-        }
-        else
-        {
-            rectTransform.anchoredPosition += eventData.delta;
-        }
+        rectTransform.anchoredPosition += eventData.delta;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
         resizing = false;
         DestroyResizeButtons();
+        UpdateResizeButtons();
     }
 
-    private void ResizeRectangle(PointerEventData eventData)
+    public void ResizeRectangle(PointerEventData eventData)
     {
         RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, eventData.position, eventData.pressEventCamera, out Vector2 localPointerPosition);
         Vector2 delta = (localPointerPosition - initialMousePosition) * resizeFactor;
@@ -139,15 +132,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
     }
     public void OnPointerDown(PointerEventData eventData)
     {
-        DestroyResizeButtons();
         CreateResizeButtons();
-    }
-
-    private IEnumerator NoInteractionCoroutine(GameObject button)
-    {
-        yield return new WaitForSeconds(2f);
-        Destroy(button);
-        resizeButtons.Remove(button);
     }
 
     private void CreateResizeButtons()
@@ -160,7 +145,6 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
             GameObject button = Instantiate(resizeButtonPrefab, corners[i], Quaternion.identity, resizeButtonParent);
             button.GetComponent<ResizeButton>().Init(this, i);
             resizeButtons.Add(button);
-            StartCoroutine(NoInteractionCoroutine(button));
         }
     }
 
@@ -173,7 +157,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
         this.initialSize = rectTransform.sizeDelta;
     }
 
-    private void DestroyResizeButtons()
+    public void DestroyResizeButtons()
     {
         StopAllCoroutines();
         foreach (GameObject button in resizeButtons)
@@ -183,7 +167,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
         resizeButtons.Clear();
     }
 
-    private void UpdateResizeButtons()
+    public void UpdateResizeButtons()
     {
         Vector3[] corners = new Vector3[4];
         rectTransform.GetWorldCorners(corners);
