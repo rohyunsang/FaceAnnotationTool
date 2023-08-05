@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class RectangleData
@@ -15,6 +16,8 @@ public class JsonSerialization : MonoBehaviour
 {
     public GameObject jsonParsingObj;
     public GameObject parentPortraits;
+    public Text saveText;
+    public int saveCount = 0;
 
     public void SaveBtn()
     {
@@ -39,7 +42,13 @@ public class JsonSerialization : MonoBehaviour
         Debug.Log("Complete");
 
         Transform childTransform = parentPortraits.transform.Find(idx.ToString());
+        saveCount++;
+        if (childTransform.gameObject.GetComponent<Portrait>().checkingImage.activeSelf)
+        {
+            saveCount--;
+        }
         childTransform.gameObject.GetComponent<Portrait>().checkingImage.SetActive(true);
+        saveText.text = "¿Ï·á : " + saveCount.ToString() + " / " + jsonParsingObj.GetComponent<JsonParsing>().jsonSquares.Count.ToString();
     }
 }
 
