@@ -12,21 +12,6 @@ public class ObjInstantManager : MonoBehaviour
     {
         GameObjectList gameObjectList = new GameObjectList();
         List<GameObject> newRectangles = new List<GameObject>();
-        // using Debug
-        for (int i = 0; i < infoArray.Length; i++)
-        {
-            string logMessage = "";
-
-            logMessage += infoArray[i].id + " Obj, ";
-            logMessage += infoArray[i].region_name + ", ";
-            foreach (int a in infoArray[i].point)
-            {
-                logMessage += a.ToString() + ", ";
-            }
-
-            Debug.Log(logMessage);
-
-        }
         
         foreach (Info info in infoArray)
         {

@@ -52,10 +52,12 @@ public class FileBrowserTest : MonoBehaviour
                         jsonManager.GetComponent<JsonParsing>().MakeImageStringArray(bytes);
                     }
                 }
-
+                jsonManager.GetComponent<JsonParsing>().CheckingFileCount();
                 string destinationPath = Path.Combine(Application.persistentDataPath, FileBrowserHelpers.GetFilename(FileBrowser.Result[i]));
                 FileBrowserHelpers.CopyFile(FileBrowser.Result[i], destinationPath);
             }
+            
+
         }
     }
 }

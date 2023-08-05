@@ -23,10 +23,12 @@ public class ResizeButton : MonoBehaviour, IDragHandler, IEndDragHandler, IPoint
     {
         rectangleResizing.ResizeRectangle(eventData); // 호출 추가
         rectangleResizing.UpdateResizeButtons(); // 버튼 위치 업데이트
+        rectangleResizing.resizing = true;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        rectangleResizing.resizing = false;
         rectangleResizing.DestroyResizeButtons();
     }
 }

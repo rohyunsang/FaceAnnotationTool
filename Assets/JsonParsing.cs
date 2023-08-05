@@ -37,6 +37,7 @@ public class JsonParsing : MonoBehaviour
     [SerializeField]
     public List<GameObjectList> jsonSquares = new List<GameObjectList>();
     public List<Texture2D> imageDatas = new List<Texture2D>();
+    public List<string> squareCoordinate = new List<string>();
 
     [SerializeField]
     private Info[] infoArray = new Info[8];
@@ -48,7 +49,21 @@ public class JsonParsing : MonoBehaviour
     public Transform scrollViewInitPanel;
 
     public GameObject failWindow;
+    public Text SquareText;
 
+
+    public void MakeJsonArray(string jsonData)
+    {
+        ParseJSONData(jsonData);
+        squareCoordinate.Add(jsonData);
+    }
+    public void MakeImageStringArray(byte[] bytes)
+    {
+        // Create a Texture2D from the image bytes
+        Texture2D texture = new Texture2D(2, 2);
+        texture.LoadImage(bytes);
+        imageDatas.Add(texture);
+    }
     public void CheckingFileCount()
     {
         if(jsonSquares.Count == imageDatas.Count && jsonSquares.Count != 0)
@@ -59,14 +74,20 @@ public class JsonParsing : MonoBehaviour
         {
             failWindow.SetActive(true);
             Invoke("FailWindowSetActiveFalse", 3f);
-            jsonSquares.Clear();
-            imageDatas.Clear();
-            foreach (Transform child in faceImage.transform)
-            {
-                Destroy(child.gameObject);
-            }
+            ClearObjs();
         }
     }
+
+    public void ClearObjs()
+    {
+        jsonSquares.Clear();
+        imageDatas.Clear();
+        foreach (Transform child in faceImage.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
     private void FailWindowSetActiveFalse()
     {
         failWindow.SetActive(false);
@@ -92,19 +113,7 @@ public class JsonParsing : MonoBehaviour
         }
     }
 
-
-
-    public void MakeJsonArray(string jsonData)
-    {
-        ParseJSONData(jsonData);
-    }
-    public void MakeImageStringArray(byte[] bytes)
-    {
-        // Create a Texture2D from the image bytes
-        Texture2D texture = new Texture2D(2, 2);
-        texture.LoadImage(bytes);
-        imageDatas.Add(texture);
-    }
+    
     public void RectanglesSetActiveFalse()
     {
         foreach(GameObjectList gameObjectList in jsonSquares)
@@ -112,6 +121,7 @@ public class JsonParsing : MonoBehaviour
             for(int i = 0; i < gameObjectList.gameObjects.Count; i++)
             {
                 gameObjectList.gameObjects.ForEach(square => square.SetActive(false));
+                
             }
         }
     }
@@ -122,6 +132,7 @@ public class JsonParsing : MonoBehaviour
         // 1. 사진을 클릭하면 idx를 기준으로 jsonSquare과 이미지를 뛰운다. 
         jsonSquares[this.idx].gameObjects.ForEach(square => square.SetActive(true));
         faceImage.texture = imageDatas[this.idx];
+        SquareText.text = squareCoordinate[idx];
     }
 
 

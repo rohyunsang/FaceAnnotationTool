@@ -25,6 +25,9 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
     private const int RIGHT_TOP = 2;
     private const int RIGHT_BOTTOM = 3;
 
+    private const float FACEIMAGE_WIDTH = 1200f;
+    private const float FACEIMAGE_HEIGHT = 960f;
+
     private void Start()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -33,14 +36,26 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
 
     public void OnDrag(PointerEventData eventData)
     {
-        rectTransform.anchoredPosition += eventData.delta;
+        Vector2 newPos = rectTransform.anchoredPosition + eventData.delta;
+
+        float adjustedPosX = newPos.x - rectTransform.rect.width * rectTransform.pivot.x;
+        float adjustedPosY = newPos.y - rectTransform.rect.height * rectTransform.pivot.y;
+
+        // 조정된 경계 체크
+        if (adjustedPosX < -600 || adjustedPosX + rectTransform.rect.width > 600
+            || adjustedPosY < -480 || adjustedPosY + rectTransform.rect.height > 480)
+        {
+            return;
+        }
+
+        rectTransform.anchoredPosition = newPos;
         UpdateResizeButtons();
     }
 
+
     public void OnEndDrag(PointerEventData eventData)
     {
-        resizing = false;
-        DestroyResizeButtons();
+        StartCoroutine(DelayedDestroyButtons());
     }
 
     public void ResizeRectangle(PointerEventData eventData)
@@ -147,19 +162,38 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
             default:
                 throw new ArgumentException($"Unexpected corner index {cornerIndex}");
         }
-        newSize.x = Mathf.Max(newSize.x, 50); // 최소 너비
-        newSize.y = Mathf.Max(newSize.y, 50); // 최소 높이
+        newSize.x = Mathf.Max(newSize.x, 30); // 최소 너비
+        newSize.y = Mathf.Max(newSize.y, 30); // 최소 높이
 
         Vector3 oldWorldPosition = rectTransform.localPosition;
+        Vector3 newPosition = oldWorldPosition + deltaPosition;
         
+
+        float adjustedPosX = newPosition.x - newSize.x * rectTransform.pivot.x;
+        float adjustedPosY = newPosition.y - newSize.y * rectTransform.pivot.y;
+
+        // 조정된 경계 체크
+        if (adjustedPosX < -600 || adjustedPosX + newSize.x > 600
+            || adjustedPosY < -480 || adjustedPosY + newSize.y > 480)
+        {
+            return;
+        }
+
         rectTransform.sizeDelta = newSize;
-        rectTransform.localPosition = oldWorldPosition + deltaPosition;
+        rectTransform.localPosition = newPosition;
         previousCornerIndex = cornerIndex;
     }
     public void OnPointerDown(PointerEventData eventData)
     {
-        CreateResizeButtons();
+        if(resizeButtons.Count == 0) // If i double clilk fastly than make two 4 boxes Prevent
+        {
+            CreateResizeButtons();
+        }
         StartCoroutine(DelayedDestroyButtons());
+    }
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        DestroyResizeButtons();
     }
 
     private IEnumerator DelayedDestroyButtons()

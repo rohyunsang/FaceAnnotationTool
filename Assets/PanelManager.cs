@@ -10,6 +10,17 @@ public class PanelManager : MonoBehaviour
     public GameObject SavePanel;
     public GameObject faceField;
 
+    public GameObject ImageClickInfo;
+
+    public void OffImageClickInfo()
+    {
+        Invoke("InvokeOffImageClickInfo", 3f);
+    }
+
+    public void InvokeOffImageClickInfo()
+    {
+        ImageClickInfo.SetActive(false);
+    }
     public void OnInitPanel()
     {
         InitPanel.SetActive(true);
