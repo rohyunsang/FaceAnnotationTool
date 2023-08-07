@@ -45,7 +45,7 @@ public class ObjInstantManager : MonoBehaviour
 
                 // Set the size and position of the rectangle
                 rectTransform.sizeDelta = new Vector2(rectWidth, rectHeight);
-                rectTransform.anchoredPosition = rectCenter - new Vector2(350f,550f); // here is your offset
+                rectTransform.anchoredPosition = rectCenter - new Vector2(PIXEL_FACEIMAGE_WIDTH/2, PIXEL_FACEIMAGE_HEIGHT/2); // here is your offset
                 rectTransform.pivot = new Vector2(0.5f, 0.5f);
 
                 // Set the name of the rectangle object
