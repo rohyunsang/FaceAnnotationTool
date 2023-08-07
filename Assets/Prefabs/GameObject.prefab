@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4019422643163690496}
   - component: {fileID: 1057250985527647832}
   - component: {fileID: 9177377316226608918}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 1634066616897513276}
   - component: {fileID: 1473784949546893946}
   - component: {fileID: 9086390041063309543}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -172,3 +172,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resizeButtonPrefab: {fileID: 8195243321932320472, guid: a4b1096cd87a1ef46adc411345268c16, type: 3}
   resizeButtonParent: {fileID: 2643125093926649848}
+  resizing: 0

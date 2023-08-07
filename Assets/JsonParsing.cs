@@ -1,22 +1,28 @@
-using System.Collections;
+using Newtonsoft.Json;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 [System.Serializable]
-public class JSONData  // use json Parsing point is error so just split ','
+public class ImageRegions
 {
-    public int[] id;
-    public string[] region_name;
+    public List<List<int>> forehead;
+    public List<List<int>> glabellus;
+    public List<List<int>> l_peroucular;
+    public List<List<int>> r_peroucular;
+    public List<List<int>> l_cheek;
+    public List<List<int>> r_cheek;
+    public List<List<int>> lip;
+    public List<List<int>> chin;
 }
+
+public class RootObject : Dictionary<string, ImageRegions> { }
 
 [System.Serializable]
 public class Info  //structure
 {
     public string id;  // needs int to string 
-    public string region_name;
+    public string[] region_name;
     public List<int> point;
 }
 
@@ -38,9 +44,9 @@ public class JsonParsing : MonoBehaviour
     public List<GameObjectList> jsonSquares = new List<GameObjectList>();
     public List<Texture2D> imageDatas = new List<Texture2D>();
     public List<string> squareCoordinate = new List<string>();
+    public List<Info> parsedInfo = new List<Info>();
 
-    [SerializeField]
-    private Info[] infoArray = new Info[8];
+
 
     public int idx = 0;
 
@@ -55,7 +61,6 @@ public class JsonParsing : MonoBehaviour
     public void MakeJsonArray(string jsonData)
     {
         ParseJSONData(jsonData);
-        squareCoordinate.Add(jsonData);
     }
     public void MakeImageStringArray(byte[] bytes)
     {
@@ -66,7 +71,7 @@ public class JsonParsing : MonoBehaviour
     }
     public void CheckingFileCount()
     {
-        if(jsonSquares.Count == imageDatas.Count && jsonSquares.Count != 0)
+        if (jsonSquares.Count == imageDatas.Count && jsonSquares.Count != 0)
         {
             InitPortrait();
         }
@@ -94,7 +99,7 @@ public class JsonParsing : MonoBehaviour
     }
     public void Portrait()
     {
-        for(int i = 0; i < imageDatas.Count; i++)
+        for (int i = 0; i < imageDatas.Count; i++)
         {
             GameObject portraitInstanceA = Instantiate(portraitPrefab, scrollView.transform);
             portraitInstanceA.name = i.ToString();
@@ -113,15 +118,15 @@ public class JsonParsing : MonoBehaviour
         }
     }
 
-    
+
     public void RectanglesSetActiveFalse()
     {
-        foreach(GameObjectList gameObjectList in jsonSquares)
+        foreach (GameObjectList gameObjectList in jsonSquares)
         {
-            for(int i = 0; i < gameObjectList.gameObjects.Count; i++)
+            for (int i = 0; i < gameObjectList.gameObjects.Count; i++)
             {
                 gameObjectList.gameObjects.ForEach(square => square.SetActive(false));
-                
+
             }
         }
     }
@@ -138,57 +143,61 @@ public class JsonParsing : MonoBehaviour
 
     public void ParseJSONData(string jsonData)
     {
-        // Deserialize the JSON data into the JSONData object
-        JSONData data = JsonUtility.FromJson<JSONData>(jsonData);
+        var rootObject = JsonConvert.DeserializeObject<RootObject>(jsonData);
 
-        // Access the "id" values
-        int[] idArray = data.id;
-        string[] regionNames = data.region_name;
-
-        // assign
-        for (int i = 0; i < idArray.Length ; i++)  
+        // Accessing the data in rootObject
+        foreach (var item in rootObject)
         {
-            infoArray[i] = new Info();
-            infoArray[i].id = idArray[i].ToString();
-            infoArray[i].region_name = regionNames[i];
-            infoArray[i].point = new List<int>();
+            string imageName = item.Key;
+            ImageRegions regions = item.Value;
+
+            Info imageInfo = new Info();
+            imageInfo.id = imageName;
+            imageInfo.region_name = new string[8]; // Assuming there are always 8 regions
+            imageInfo.point = new List<int>();
+
+            int i = 0;  // For indexing the region_name array
+
+            // Process each region and add data to the imageInfo object
+            imageInfo.region_name[i++] = ProcessRegion("forehead", regions.forehead, imageInfo);
+            imageInfo.region_name[i++] = ProcessRegion("glabellus", regions.glabellus, imageInfo);
+            imageInfo.region_name[i++] = ProcessRegion("l_peroucular", regions.l_peroucular, imageInfo);
+            imageInfo.region_name[i++] = ProcessRegion("r_peroucular", regions.r_peroucular, imageInfo);
+            imageInfo.region_name[i++] = ProcessRegion("l_cheek", regions.l_cheek, imageInfo);
+            imageInfo.region_name[i++] = ProcessRegion("r_cheek", regions.r_cheek, imageInfo);
+            imageInfo.region_name[i++] = ProcessRegion("lip", regions.lip, imageInfo);
+            imageInfo.region_name[i++] = ProcessRegion("chin", regions.chin, imageInfo);
+
+            parsedInfo.Add(imageInfo); // Add the created info to the list
         }
 
-        // json 4 point split
-        int start = jsonData.IndexOf("[[[");
-
-        if (start != -1)
+        // Optional: Check the data
+        foreach (var info in parsedInfo)
         {
-            int end = jsonData.IndexOf("]]]", start);
-
-            if (end != -1)
+            Debug.Log($"ID: {info.id}");
+            foreach (var name in info.region_name)
             {
-                string bboxPointData = jsonData.Substring(start, end - start + 3);
-
-                string[] bboxPoints = bboxPointData.Split(new string[] { "], [" }, System.StringSplitOptions.None);
-
-                
-                int idx = 0; // using 2 point to 4 point 
-                foreach (string pointData in bboxPoints)
-                {
-                    string[] coordinates = pointData.Replace("[", string.Empty).Replace("]", string.Empty).Split(',');
-                    if (idx % 2 == 0)
-                    {
-                        infoArray[idx / 2].point.Add(int.Parse(coordinates[0]));
-                        infoArray[idx / 2].point.Add(int.Parse(coordinates[1]));
-                    }
-                    else
-                    {
-                        infoArray[idx / 2].point.Add(int.Parse(coordinates[0]));
-                        infoArray[idx / 2].point.Add(int.Parse(coordinates[1]));
-                    }
-                    idx++;
-                }
+                Debug.Log($"Region Name: {name}");
+            }
+            foreach (var point in info.point)
+            {
+                Debug.Log($"Point: {point}");
             }
         }
+        
 
-        // all Done parsing json data call ObjInstantManager function
-        ObjInstantGameObject.GetComponent<ObjInstantManager>().ObjInstant(infoArray);
-        // ObjInstant Function in ObjInstantManager Class in ObjInstantGameObject
+        ObjInstantGameObject.GetComponent<ObjInstantManager>().ObjInstant(parsedInfo);
+    }
+
+    private string ProcessRegion(string regionName, List<List<int>> coordinates, Info imageInfo)
+    {
+        if (coordinates.Count >= 2)
+        {
+            imageInfo.point.Add(coordinates[0][0]);
+            imageInfo.point.Add(coordinates[0][1]);
+            imageInfo.point.Add(coordinates[1][0]);
+            imageInfo.point.Add(coordinates[1][1]);
+        }
+        return regionName;
     }
 }

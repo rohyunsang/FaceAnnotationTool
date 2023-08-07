@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDownHandler
 {
@@ -18,32 +17,35 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
     public bool resizing;
     //private float resizeFactor = 0.5f; // Resizing speed control
     private int cornerIndex;
-    private int previousCornerIndex = 1; // New field to keep track of the previously processed corner index
+    private int previousCornerIndex = 4; // New field to keep track of the previously processed corner index
 
     private const int LEFT_BOTTOM = 0;
     private const int LEFT_TOP = 1;
     private const int RIGHT_TOP = 2;
     private const int RIGHT_BOTTOM = 3;
+    private const int MIDDLE_CENTOR = 4;
 
-    private const float FACEIMAGE_WIDTH = 1200f;
-    private const float FACEIMAGE_HEIGHT = 960f;
+    private const float FACEIMAGE_WIDTH = 715f;
+    private const float FACEIMAGE_HEIGHT = 1080f;
+
+    private const float moveSpeed = 0.75f;
 
     private void Start()
     {
         rectTransform = GetComponent<RectTransform>();
-        rectTransform.pivot = new Vector2(1, 0);
+        rectTransform.pivot = new Vector2(0.5f, 0.5f);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        Vector2 newPos = rectTransform.anchoredPosition + eventData.delta;
+        Vector2 newPos = rectTransform.anchoredPosition + eventData.delta * moveSpeed;
 
         float adjustedPosX = newPos.x - rectTransform.rect.width * rectTransform.pivot.x;
         float adjustedPosY = newPos.y - rectTransform.rect.height * rectTransform.pivot.y;
 
         // 조정된 경계 체크
-        if (adjustedPosX < -600 || adjustedPosX + rectTransform.rect.width > 600
-            || adjustedPosY < -480 || adjustedPosY + rectTransform.rect.height > 480)
+        if (adjustedPosX < -FACEIMAGE_WIDTH / 2 || adjustedPosX + rectTransform.rect.width > FACEIMAGE_WIDTH / 2
+            || adjustedPosY < -FACEIMAGE_HEIGHT / 2 || adjustedPosY + rectTransform.rect.height > FACEIMAGE_HEIGHT / 2)
         {
             return;
         }
@@ -62,7 +64,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
     {
         RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, eventData.position, eventData.pressEventCamera, out Vector2 localPointerPosition);
         Vector2 delta = (localPointerPosition - initialMousePosition);
-        Debug.Log("localPointerPosition: "+  localPointerPosition +  " inititalMousePosition: " + initialMousePosition);
+        Debug.Log("localPointerPosition: " + localPointerPosition + " inititalMousePosition: " + initialMousePosition);
         Vector2 newSize;
         Vector3 deltaPosition = Vector3.zero;
 
@@ -88,7 +90,13 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                     deltaPosition.x = rectTransform.rect.width;
                     initialMousePosition.x -= deltaPosition.x;
                 }
-                
+                else if (previousCornerIndex == MIDDLE_CENTOR)  // work correct 
+                {
+                    deltaPosition.x = rectTransform.rect.width / 2;
+                    deltaPosition.y = rectTransform.rect.height / 2;
+                    initialMousePosition -= new Vector2(deltaPosition.x, deltaPosition.y);
+                }
+
                 break;
             case LEFT_TOP:
                 rectTransform.pivot = new Vector2(1, 0);
@@ -112,7 +120,13 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                     initialMousePosition.x -= deltaPosition.x;
                     initialMousePosition.y -= deltaPosition.y;
                 }
-                
+                else if (previousCornerIndex == MIDDLE_CENTOR)
+                {
+                    deltaPosition.x = rectTransform.rect.width / 2;
+                    deltaPosition.y = -rectTransform.rect.height / 2;
+                    initialMousePosition -= new Vector2(deltaPosition.x, deltaPosition.y);
+                }
+
                 break;
             case RIGHT_TOP:
                 rectTransform.pivot = new Vector2(0, 0);
@@ -133,7 +147,13 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                     deltaPosition.y = -rectTransform.rect.height;
                     initialMousePosition.y -= deltaPosition.y;
                 }
-                
+                else if (previousCornerIndex == MIDDLE_CENTOR)  // work correct 
+                {
+                    deltaPosition.x = -rectTransform.rect.width / 2;
+                    deltaPosition.y = -rectTransform.rect.height / 2;
+                    initialMousePosition -= new Vector2(deltaPosition.x, deltaPosition.y);
+                }
+
                 break;
             case RIGHT_BOTTOM:
                 rectTransform.pivot = new Vector2(0, 1);
@@ -157,7 +177,13 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
                     deltaPosition.y = rectTransform.rect.height;
                     initialMousePosition.y -= deltaPosition.y;
                 }
-                
+                else if (previousCornerIndex == MIDDLE_CENTOR)  // work correct 
+                {
+                    deltaPosition.x = -rectTransform.rect.width / 2;
+                    deltaPosition.y = rectTransform.rect.height / 2;
+                    initialMousePosition -= new Vector2(deltaPosition.x, deltaPosition.y);
+                }
+
                 break;
             default:
                 throw new ArgumentException($"Unexpected corner index {cornerIndex}");
@@ -167,7 +193,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
 
         Vector3 oldWorldPosition = rectTransform.localPosition;
         Vector3 newPosition = oldWorldPosition + deltaPosition;
-        
+
 
         float adjustedPosX = newPosition.x - newSize.x * rectTransform.pivot.x;
         float adjustedPosY = newPosition.y - newSize.y * rectTransform.pivot.y;
@@ -185,7 +211,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
     }
     public void OnPointerDown(PointerEventData eventData)
     {
-        if(resizeButtons.Count == 0) // If i double clilk fastly than make two 4 boxes Prevent
+        if (resizeButtons.Count == 0) // If i double click fastly then make two 4 boxes Prevent
         {
             CreateResizeButtons();
         }

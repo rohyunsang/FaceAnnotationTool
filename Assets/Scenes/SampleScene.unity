@@ -1786,7 +1786,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -260, y: 0}
+  m_AnchoredPosition: {x: -435, y: 0}
   m_SizeDelta: {x: 600, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &345736402
@@ -3284,7 +3284,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 724512838}
-  - component: {fileID: 724512837}
+  - component: {fileID: 724512839}
   m_Layer: 0
   m_Name: ObjInstantManager
   m_TagString: Untagged
@@ -3292,21 +3292,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &724512837
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 724512836}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf8c644bd7985634bab3172958eea0fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rectanglePrefab: {fileID: 6467952595873649915, guid: c2e234974b6d0e54a85bf07b63ea8ef0, type: 3}
-  SpawnPoint: {fileID: 1614480123}
-  JsonParsingObj: {fileID: 1623051055}
 --- !u!4 &724512838
 Transform:
   m_ObjectHideFlags: 0
@@ -3322,6 +3307,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &724512839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 724512836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf8c644bd7985634bab3172958eea0fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rectanglePrefab: {fileID: 6467952595873649915, guid: c2e234974b6d0e54a85bf07b63ea8ef0, type: 3}
+  SpawnPoint: {fileID: 1614480123}
+  JsonParsingObj: {fileID: 1623051055}
 --- !u!1 &745001763
 GameObject:
   m_ObjectHideFlags: 0
@@ -5505,7 +5505,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -46.71997, y: 60}
+  m_AnchoredPosition: {x: -46.719727, y: 60}
   m_SizeDelta: {x: 240, y: 120}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &1337553599
@@ -6003,7 +6003,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 907360035}
   m_HandleRect: {fileID: 907360034}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -6217,8 +6217,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 700, y: 0}
-  m_SizeDelta: {x: 1200, y: 960}
+  m_AnchoredPosition: {x: 524.89, y: 3.063}
+  m_SizeDelta: {x: 715, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1614480123
 MonoBehaviour:
@@ -6321,31 +6321,7 @@ MonoBehaviour:
   jsonSquares: []
   imageDatas: []
   squareCoordinate: []
-  infoArray:
-  - id: 
-    region_name: 
-    point: 
-  - id: 
-    region_name: 
-    point: 
-  - id: 
-    region_name: 
-    point: 
-  - id: 
-    region_name: 
-    point: 
-  - id: 
-    region_name: 
-    point: 
-  - id: 
-    region_name: 
-    point: 
-  - id: 
-    region_name: 
-    point: 
-  - id: 
-    region_name: 
-    point: 
+  parsedInfo: []
   idx: 0
   portraitPrefab: {fileID: 2811200311027031293, guid: 6ab80cca9ed06624b83ed9e9803d839a, type: 3}
   scrollView: {fileID: 1328031789}
