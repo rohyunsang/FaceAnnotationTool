@@ -87,6 +87,7 @@ public class JsonParsing : MonoBehaviour
     {
         jsonSquares.Clear();
         imageDatas.Clear();
+        parsedInfo.Clear();
         foreach (Transform child in faceImage.transform)
         {
             Destroy(child.gameObject);
