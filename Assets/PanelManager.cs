@@ -8,9 +8,14 @@ public class PanelManager : MonoBehaviour
     public GameObject InitPanel;
     public GameObject OptionPanel;
     public GameObject SavePanel;
+    public GameObject LoginPanel;
+
+
     public GameObject faceField;
 
     public GameObject ImageClickInfo;
+
+    
 
     public void OffImageClickInfo()
     {
@@ -35,6 +40,14 @@ public class PanelManager : MonoBehaviour
         SavePanel.SetActive(true);
     }
 
+    public void OnLoginPanel()
+    {
+        LoginPanel.SetActive(true);
+    }
+    public void OffLoginPanel()
+    {
+        LoginPanel.SetActive(false);
+    }
     public void OffSavePanel()
     {
         SavePanel.SetActive(false);
