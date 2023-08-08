@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System.Drawing;
+using UnityEngine.UI;
 
 public class ResizeButton : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDownHandler
 {
@@ -30,5 +31,6 @@ public class ResizeButton : MonoBehaviour, IDragHandler, IEndDragHandler, IPoint
     {
         rectangleResizing.resizing = false;
         rectangleResizing.DestroyResizeButtons();
+        rectangleResizing.gameObject.GetComponent<Image>().raycastTarget = true;
     }
 }
