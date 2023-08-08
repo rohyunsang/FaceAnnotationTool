@@ -1,6 +1,8 @@
 using Newtonsoft.Json;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Apple.ReplayKit;
 using UnityEngine.UI;
 
 [System.Serializable]
@@ -57,6 +59,7 @@ public class JsonParsing : MonoBehaviour
     public GameObject failWindow;
     public Text SquareText;
 
+    private bool isCoroutineRunning = false;
 
     public void MakeJsonArray(string jsonData)
     {
@@ -92,6 +95,7 @@ public class JsonParsing : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+        isCoroutineRunning = false;
     }
 
     private void FailWindowSetActiveFalse()
@@ -138,9 +142,40 @@ public class JsonParsing : MonoBehaviour
         // 1. 사진을 클릭하면 idx를 기준으로 jsonSquare과 이미지를 뛰운다. 
         jsonSquares[this.idx].gameObjects.ForEach(square => square.SetActive(true));
         faceImage.texture = imageDatas[this.idx];
-        SquareText.text = squareCoordinate[idx];
+        if (!isCoroutineRunning)
+        {
+            StartCoroutine(SetRaycastTargetTrueEverySecond());
+        }
     }
 
+    private IEnumerator SetRaycastTargetTrueEverySecond()
+    {
+        isCoroutineRunning = true;
+        while (true)
+        {
+            foreach (GameObjectList list in jsonSquares)
+            {
+                foreach (GameObject obj in list.gameObjects)
+                {
+                    // Image 컴포넌트에 대한 처리
+                    Image img = obj.GetComponent<Image>();
+                    if (img != null)
+                    {
+                        img.raycastTarget = true;
+                    }
+
+                    // RawImage 컴포넌트에 대한 처리
+                    RawImage rawImg = obj.GetComponent<RawImage>();
+                    if (rawImg != null)
+                    {
+                        rawImg.raycastTarget = true;
+                    }
+                }
+            }
+
+            yield return new WaitForSeconds(1f);
+        }
+    }
 
     public void ParseJSONData(string jsonData)
     {
