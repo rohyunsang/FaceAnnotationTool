@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2804875410334988676}
   - component: {fileID: 3654133451218338982}
   - component: {fileID: 3479610918963602085}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Text (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 7343499773404122609}
   - component: {fileID: 6284122374657313408}
   - component: {fileID: 1328597366863767081}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Button (Legacy)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
