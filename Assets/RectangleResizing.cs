@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using static AspectRatioController;
 
 public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDownHandler
 {
@@ -35,6 +37,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
     {
         rectTransform = GetComponent<RectTransform>();
         rectTransform.pivot = new Vector2(0.5f, 0.5f);
+        
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -209,18 +212,29 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
         rectTransform.localPosition = newPosition;
         previousCornerIndex = cornerIndex;
     }
+
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (resizeButtons.Count == 0) // If i double click fastly then make two 4 boxes Prevent
+        List<RaycastResult> results = new List<RaycastResult>();
+
+        EventSystem.current.RaycastAll(eventData, results);
+        foreach (var result in results)
         {
-            CreateResizeButtons();
+            RectangleResizing rect = result.gameObject.GetComponent<RectangleResizing>();
+            if (rect != null && rect.resizeButtons.Count == 0)
+            {
+                rect.CreateResizeButtons();
+                rect.StartCoroutine(rect.DelayedDestroyButtons());
+            }
+            if(results.Count > 1)
+                gameObject.GetComponent<Image>().raycastTarget = false;
         }
-        StartCoroutine(DelayedDestroyButtons());
     }
     public void OnPointerUp(PointerEventData eventData)
     {
         DestroyResizeButtons();
     }
+
 
     private IEnumerator DelayedDestroyButtons()
     {
