@@ -11,6 +11,8 @@ public class SaveUserData : MonoBehaviour
 
     public Text idCheckText;
     public Text emailCheckText;
+    public Text idCheckTextOptionPanel;
+    public Text emailCheckTextOptionPanel;
 
     public GameObject UserDataCheckingImage;
 
@@ -18,6 +20,8 @@ public class SaveUserData : MonoBehaviour
     {
         idCheckText.text += idField.text;
         emailCheckText.text += emailField.text;
+        idCheckTextOptionPanel.text += idField.text;
+        emailCheckTextOptionPanel.text += emailField.text;
     }
     public void OnUserDataCheckImage()
     {
@@ -29,7 +33,9 @@ public class SaveUserData : MonoBehaviour
     }
     public void DeleteUserData()
     {
-        idCheckText.text = "아이디 : ";
+        idCheckText.text = "이름 : ";
         emailCheckText.text = "이메일 : ";
+        idCheckTextOptionPanel.text = "이름 : ";
+        emailCheckTextOptionPanel.text = "이메일 : ";
     }
 }
