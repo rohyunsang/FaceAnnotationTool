@@ -19,5 +19,6 @@ public class BtnNameManager : MonoBehaviour
         {
             Debug.LogError("Failed to find or access RectangleCreator component.");
         }
+        
     }
 }

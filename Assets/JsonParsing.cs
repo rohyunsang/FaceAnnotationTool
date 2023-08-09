@@ -2,7 +2,6 @@ using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Apple.ReplayKit;
 using UnityEngine.UI;
 
 [System.Serializable]
@@ -144,11 +143,11 @@ public class JsonParsing : MonoBehaviour
         faceImage.texture = imageDatas[this.idx];
         if (!isCoroutineRunning)
         {
-            StartCoroutine(SetRaycastTargetTrueEverySecond());
+            StartCoroutine(SetRaycastTargetTrueEveryTwoSecond());
         }
     }
 
-    private IEnumerator SetRaycastTargetTrueEverySecond()
+    private IEnumerator SetRaycastTargetTrueEveryTwoSecond()
     {
         isCoroutineRunning = true;
         while (true)
@@ -173,7 +172,7 @@ public class JsonParsing : MonoBehaviour
                 }
             }
 
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(2f);
         }
     }
 

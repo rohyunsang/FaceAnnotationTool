@@ -57,7 +57,6 @@ public class ObjInstantManager : MonoBehaviour
                 {
                     regionNameText.text = info.region_name[i];
                 }
-
                 newRectangles.Add(rectangle);
                 gameObjectList.gameObjects = newRectangles;
             }

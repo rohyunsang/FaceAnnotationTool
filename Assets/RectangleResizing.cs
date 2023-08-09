@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static AspectRatioController;
 
 public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerDownHandler
 {
@@ -29,7 +28,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
 
     private const float FACEIMAGE_WIDTH = 715f;
     private const float FACEIMAGE_HEIGHT = 1080f;
-    private const float FACEIMAGE_BOUNDRY_OFFSET = 10F;
+    private float FACEIMAGE_BOUNDRY_OFFSET = 10F;
 
     private const float moveSpeed = 0.75f;
 
@@ -202,7 +201,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
         float adjustedPosX = newPosition.x - newSize.x * rectTransform.pivot.x;
         float adjustedPosY = newPosition.y - newSize.y * rectTransform.pivot.y;
 
-        if (adjustedPosX < -FACEIMAGE_WIDTH / 2 - FACEIMAGE_BOUNDRY_OFFSET || adjustedPosX + rectTransform.rect.width > FACEIMAGE_WIDTH / 2 + FACEIMAGE_BOUNDRY_OFFSET
+        if (adjustedPosX < -FACEIMAGE_WIDTH / 2 - FACEIMAGE_BOUNDRY_OFFSET  || adjustedPosX + rectTransform.rect.width > FACEIMAGE_WIDTH / 2 + FACEIMAGE_BOUNDRY_OFFSET
             || adjustedPosY < -FACEIMAGE_HEIGHT / 2 - FACEIMAGE_BOUNDRY_OFFSET || adjustedPosY + rectTransform.rect.height > FACEIMAGE_HEIGHT / 2 + FACEIMAGE_BOUNDRY_OFFSET)
         {
             return;
@@ -233,6 +232,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
     public void OnPointerUp(PointerEventData eventData)
     {
         DestroyResizeButtons();
+        FACEIMAGE_BOUNDRY_OFFSET++;
     }
 
 
@@ -284,7 +284,8 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
 
         for (int i = 0; i < 4; i++)
         {
-            resizeButtons[i].transform.position = corners[i];
+            if(resizeButtons.Count > 0)
+                resizeButtons[i].transform.position = corners[i];
         }
     }
 }
