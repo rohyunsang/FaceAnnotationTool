@@ -25,7 +25,8 @@ public class SaveUserData : MonoBehaviour
     }
     public void OnUserDataCheckImage()
     {
-        UserDataCheckingImage.SetActive(true);
+        if (!idField.text.Equals("") && !emailField.text.Equals(""))
+            UserDataCheckingImage.SetActive(true);
     }
     public void OffUserDataCheckImage()
     {
