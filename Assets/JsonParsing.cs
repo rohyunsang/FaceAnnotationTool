@@ -5,19 +5,24 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [System.Serializable]
-public class ImageRegions
+public class RectangleEntryFile
 {
-    public List<List<int>> forehead;
-    public List<List<int>> glabellus;
-    public List<List<int>> l_peroucular;
-    public List<List<int>> r_peroucular;
-    public List<List<int>> l_cheek;
-    public List<List<int>> r_cheek;
-    public List<List<int>> lip;
-    public List<List<int>> chin;
+    public string name;
+    public List<int> points;
 }
 
-public class RootObject : Dictionary<string, ImageRegions> { }
+[System.Serializable]
+public class ImageDataFile
+{
+    public string imageName;
+    public List<RectangleEntry> rectangleEntries;
+}
+
+[System.Serializable]
+public class RootObject
+{
+    public List<ImageData> imageDataList;
+}
 
 [System.Serializable]
 public class Info  //structure
@@ -106,7 +111,7 @@ public class JsonParsing : MonoBehaviour
         for (int i = 0; i < imageDatas.Count; i++)
         {
             GameObject portraitInstanceA = Instantiate(portraitPrefab, scrollView.transform);
-            portraitInstanceA.name = i.ToString();
+            portraitInstanceA.name = parsedInfo[i].id;
             portraitInstanceA.GetComponent<Image>().sprite = Sprite.Create(imageDatas[i], new Rect(0, 0, imageDatas[i].width, imageDatas[i].height), Vector2.one * 0.5f);
         }
     }
@@ -130,15 +135,14 @@ public class JsonParsing : MonoBehaviour
             for (int i = 0; i < gameObjectList.gameObjects.Count; i++)
             {
                 gameObjectList.gameObjects.ForEach(square => square.SetActive(false));
-
             }
         }
     }
     public void QueueManager(int idx) // using btn;
     {
         jsonSquares[this.idx].gameObjects.ForEach(square => square.SetActive(false));
-        this.idx = idx;
         // 1. 사진을 클릭하면 idx를 기준으로 jsonSquare과 이미지를 뛰운다. 
+        this.idx = idx;
         jsonSquares[this.idx].gameObjects.ForEach(square => square.SetActive(true));
         faceImage.texture = imageDatas[this.idx];
         if (!isCoroutineRunning)
@@ -180,34 +184,32 @@ public class JsonParsing : MonoBehaviour
     {
         var rootObject = JsonConvert.DeserializeObject<RootObject>(jsonData);
 
-        // Accessing the data in rootObject
-        foreach (var item in rootObject)
+        // rootObject에서 데이터에 액세스
+        foreach (var imageData in rootObject.imageDataList)
         {
-            string imageName = item.Key;
-            ImageRegions regions = item.Value;
-
             Info imageInfo = new Info();
-            imageInfo.id = imageName;
-            imageInfo.region_name = new string[8]; // Assuming there are always 8 regions
+            imageInfo.id = imageData.imageName;
+            imageInfo.region_name = new string[imageData.rectangleEntries.Count];
             imageInfo.point = new List<int>();
 
-            int i = 0;  // For indexing the region_name array
+            int i = 0;  // region_name 배열 인덱싱을 위한 변수
 
-            // Process each region and add data to the imageInfo object
-            imageInfo.region_name[i++] = ProcessRegion("forehead", regions.forehead, imageInfo);
-            imageInfo.region_name[i++] = ProcessRegion("glabellus", regions.glabellus, imageInfo);
-            imageInfo.region_name[i++] = ProcessRegion("l_peroucular", regions.l_peroucular, imageInfo);
-            imageInfo.region_name[i++] = ProcessRegion("r_peroucular", regions.r_peroucular, imageInfo);
-            imageInfo.region_name[i++] = ProcessRegion("l_cheek", regions.l_cheek, imageInfo);
-            imageInfo.region_name[i++] = ProcessRegion("r_cheek", regions.r_cheek, imageInfo);
-            imageInfo.region_name[i++] = ProcessRegion("lip", regions.lip, imageInfo);
-            imageInfo.region_name[i++] = ProcessRegion("chin", regions.chin, imageInfo);
+            // 각 rectangleEntry를 처리하고 imageInfo 객체에 데이터 추가
+            foreach (var rectangleEntry in imageData.rectangleEntries)
+            {
+                imageInfo.region_name[i] = rectangleEntry.name;
+                imageInfo.point.AddRange(rectangleEntry.points);
+                i++;
+            }
 
-            parsedInfo.Add(imageInfo); // Add the created info to the list
+            parsedInfo.Add(imageInfo); // 생성된 정보를 목록에 추가
+
         }
 
-        // Optional: Check the data
-        foreach (var info in parsedInfo)
+        // 선택 사항: 데이터 확인
+        //Debug
+        /*
+         foreach (var info in parsedInfo)
         {
             Debug.Log($"ID: {info.id}");
             foreach (var name in info.region_name)
@@ -219,20 +221,8 @@ public class JsonParsing : MonoBehaviour
                 Debug.Log($"Point: {point}");
             }
         }
-        
+         */
 
         ObjInstantGameObject.GetComponent<ObjInstantManager>().ObjInstant(parsedInfo);
-    }
-
-    private string ProcessRegion(string regionName, List<List<int>> coordinates, Info imageInfo)
-    {
-        if (coordinates.Count >= 2)
-        {
-            imageInfo.point.Add(coordinates[0][0]);
-            imageInfo.point.Add(coordinates[0][1]);
-            imageInfo.point.Add(coordinates[1][0]);
-            imageInfo.point.Add(coordinates[1][1]);
-        }
-        return regionName;
     }
 }
