@@ -3,8 +3,6 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-
 [System.Serializable]
 public class RectangleEntry
 {
