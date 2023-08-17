@@ -54,6 +54,70 @@ public class JsonSerialization : MonoBehaviour
 
     public GameObject FileBrowserObj;
 
+    public void InitializeRectangleDict()
+    {
+        int totalEntries = jsonParsingObj.GetComponent<JsonParsing>().jsonSquares.Count;
+
+        for (int idx = 0; idx < totalEntries; idx++)
+        {
+            GameObjectList gameObjectList = jsonParsingObj.GetComponent<JsonParsing>().jsonSquares[idx];
+            string currentId = jsonParsingObj.GetComponent<JsonParsing>().parsedInfo[idx].id;
+
+            if (!rectangleDict.ContainsKey(currentId))
+            {
+                rectangleDict[currentId] = new List<RectangleEntry>();
+            }
+
+            foreach (GameObject child in gameObjectList.gameObjects)
+            {
+                // ... (기존의 사각형 항목을 추가/수정하는 로직)
+                RectTransform rectTransform = child.GetComponent<RectTransform>();
+
+                Vector2 pivot = rectTransform.pivot;
+                Vector2 pivotOffset = new Vector2((0.5f - pivot.x) * rectTransform.sizeDelta.x, (0.5f - pivot.y) * rectTransform.sizeDelta.y);
+                Vector2 adjustedPosition = rectTransform.anchoredPosition + pivotOffset;
+
+                Vector2 center = adjustedPosition + new Vector2(PIXEL_FACEIMAGE_WIDTH / 2, PIXEL_FACEIMAGE_HEIGHT / 2);
+                Vector2 topLeft = new Vector2(center.x - rectTransform.sizeDelta.x / 2, center.y + rectTransform.sizeDelta.y / 2);
+                Vector2 bottomRight = new Vector2(center.x + rectTransform.sizeDelta.x / 2, center.y - rectTransform.sizeDelta.y / 2);
+
+                int originalX1 = (int)(topLeft.x / PIXEL_FACEIMAGE_WIDTH * PIXEL_WIDTH);
+                int originalY1 = (int)((PIXEL_FACEIMAGE_HEIGHT - topLeft.y) / PIXEL_FACEIMAGE_HEIGHT * PIXEL_HEIGHT);
+                int originalX2 = (int)(bottomRight.x / PIXEL_FACEIMAGE_WIDTH * PIXEL_WIDTH);
+                int originalY2 = (int)((PIXEL_FACEIMAGE_HEIGHT - bottomRight.y) / PIXEL_FACEIMAGE_HEIGHT * PIXEL_HEIGHT);
+
+                RectangleEntry entry = new RectangleEntry();
+                entry.name = child.name;
+
+                entry.points.Add(originalX1);
+                entry.points.Add(originalY1);
+                entry.points.Add(originalX2);
+                entry.points.Add(originalY2);
+
+                // Check if an entry with the same name exists
+                RectangleEntry existingEntry = rectangleDict[currentId].Find(e => e.name == entry.name);
+
+                if (existingEntry != null)
+                {
+                    // Overwrite the points for the existing entry
+                    existingEntry.points = entry.points;
+                }
+                else
+                {
+                    // Add the new entry if it doesn't exist
+                    rectangleDict[currentId].Add(entry);
+                }
+            }
+        }
+    }
+
+    public void ClearSaveCount()
+    {
+        saveCount = 0;
+        saveText.text = "완료 : " + saveCount.ToString() + " / " + jsonParsingObj.GetComponent<JsonParsing>().jsonSquares.Count.ToString();
+    }
+
+
     public void SaveBtn()
     {
         int idx = jsonParsingObj.GetComponent<JsonParsing>().idx;
@@ -113,7 +177,6 @@ public class JsonSerialization : MonoBehaviour
         }
         if (saveCount == jsonParsingObj.GetComponent<JsonParsing>().jsonSquares.Count)
         {
-            SaveJson();
             saveCount = 0;
             saveCompleteImage.SetActive(true);
         }
@@ -148,7 +211,7 @@ public class JsonSerialization : MonoBehaviour
         Directory.CreateDirectory(jsonsDirectoryPath);  // 디렉토리가 없으면 생성하고, 있으면 아무것도 하지 않습니다.
 
         // 'jsons' 디렉토리 안에 .json 파일을 저장합니다.
-        string jsonFilePath = Path.Combine(jsonsDirectoryPath, "faceField" + System.DateTime.Now.ToString("MM_dd_HH_mm_ss") + ".json");
+        string jsonFilePath = Path.Combine(jsonsDirectoryPath, "anno" +"_"+ System.DateTime.Now.ToString("MM_dd_HH_mm_ss") + ".json");
         File.WriteAllText(jsonFilePath, json);
 
         Debug.Log("Complete");
