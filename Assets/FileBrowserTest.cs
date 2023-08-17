@@ -49,7 +49,8 @@ public class FileBrowserTest : MonoBehaviour
 
                     // 葛电 .jpg 颇老 贸府
                     List<string> jpgFiles = GetAllFilesInDirectory(FileBrowser.Result[i], "*.jpg");
-                    foreach (string jpgFile in jpgFiles)
+                    List<string> sortedJpgFiles = jpgFiles.OrderBy(Path.GetFileName).ToList();
+                    foreach (string jpgFile in sortedJpgFiles)
                     {
                         byte[] bytes = FileBrowserHelpers.ReadBytesFromFile(jpgFile);
                         jsonManager.GetComponent<JsonParsing>().MakeImageStringArray(bytes);
