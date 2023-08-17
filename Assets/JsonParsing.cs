@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -206,22 +207,8 @@ public class JsonParsing : MonoBehaviour
 
         }
 
-        // 선택 사항: 데이터 확인
-        //Debug
-        /*
-         foreach (var info in parsedInfo)
-        {
-            Debug.Log($"ID: {info.id}");
-            foreach (var name in info.region_name)
-            {
-                Debug.Log($"Region Name: {name}");
-            }
-            foreach (var point in info.point)
-            {
-                Debug.Log($"Point: {point}");
-            }
-        }
-         */
+        // parsedInfo를 id순으로 정렬
+        parsedInfo.Sort((info1, info2) => string.Compare(info1.id, info2.id));
 
         ObjInstantGameObject.GetComponent<ObjInstantManager>().ObjInstant(parsedInfo);
     }
