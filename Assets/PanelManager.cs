@@ -14,8 +14,16 @@ public class PanelManager : MonoBehaviour
     public GameObject faceField;
 
     public GameObject ImageClickInfo;
+    public GameObject ImageEditBtn;
 
-    
+    public void OnImageEditBtn()
+    {
+        ImageEditBtn.SetActive(true);
+    }
+    public void OffImageEditBtn()
+    {
+        ImageEditBtn.SetActive(false);
+    }
 
     public void OffImageClickInfo()
     {
