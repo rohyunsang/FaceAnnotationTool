@@ -1,7 +1,6 @@
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -44,6 +43,7 @@ public class JsonParsing : MonoBehaviour
     public GameObject PanelManagerObj;
     public GameObject ObjInstantGameObject; // using call ObjInstantManager Class Function
     public RawImage faceImage;
+    public GameObject serialJsonObj;
 
     public GameObject WorkEndImage;
 
@@ -76,7 +76,20 @@ public class JsonParsing : MonoBehaviour
         Texture2D texture = new Texture2D(2, 2);
         texture.LoadImage(bytes);
         imageDatas.Add(texture);
+
+        int width = texture.width;
+        int height = texture.height;
+        serialJsonObj.GetComponent<JsonSerialization>().PIXEL_WIDTH = width;
+        serialJsonObj.GetComponent<JsonSerialization>().PIXEL_HEIGHT = height;
+        ObjInstantGameObject.GetComponent<ObjInstantManager>().PIXEL_WIDTH = width;
+        ObjInstantGameObject.GetComponent<ObjInstantManager>().PIXEL_HEIGHT = height;
+
+        Debug.Log("Texture Width: " + width);
+        Debug.Log("Texture Height: " + height);
+        faceImage.GetComponent<RectTransform>().sizeDelta = new Vector2((float)width / height * 1080f, faceImage.GetComponent<RectTransform>().sizeDelta.y);
     }
+
+
     public void CheckingFileCount()
     {
         if (jsonSquares.Count == imageDatas.Count && jsonSquares.Count != 0)

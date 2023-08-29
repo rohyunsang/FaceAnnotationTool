@@ -17,7 +17,7 @@ public class FileBrowserTest : MonoBehaviour
 
     public void ShowFileBrowser()
     {
-        FileBrowser.SetFilters(true, new FileBrowser.Filter("Files", ".jpg", ".png", ".json"), new FileBrowser.Filter("Text Files", ".txt", ".pdf"));
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("Files", ".jpg", ".png", ".json", ".jpeg"), new FileBrowser.Filter("Text Files", ".txt", ".pdf"));
         FileBrowser.SetDefaultFilter(".json");
         FileBrowser.SetExcludedExtensions(".lnk", ".tmp", ".zip", ".rar", ".exe");
         FileBrowser.AddQuickLink("Users", "C:\\Users", null);
@@ -46,8 +46,8 @@ public class FileBrowserTest : MonoBehaviour
                         jsonStrings[Path.GetFileName(jsonFile)] = System.Text.Encoding.UTF8.GetString(bytes);
 
                     }
-
-                    // 모든 .jpg 파일 처리
+                    
+                     // 모든 .jpg 파일 처리
                     List<string> jpgFiles = GetAllFilesInDirectory(FileBrowser.Result[i], "*.jpg");
                     List<string> sortedJpgFiles = jpgFiles.OrderBy(Path.GetFileName).ToList();
                     foreach (string jpgFile in sortedJpgFiles)
@@ -60,6 +60,24 @@ public class FileBrowserTest : MonoBehaviour
                         filePath = Path.GetDirectoryName(jpgFile);
                         Debug.Log("Current Directory of " + Path.GetFileName(jpgFile) + ": " + currentDirectory);
                     }
+                    
+                     // 모든 .jpeg 파일 처리
+                    List<string> jpegFiles = GetAllFilesInDirectory(FileBrowser.Result[i], "*.jpeg");
+                    List<string> sortedJpegFiles = jpegFiles.OrderBy(Path.GetFileName).ToList();
+                    foreach (string jpegFile in sortedJpegFiles)
+                    {
+                        byte[] bytes = FileBrowserHelpers.ReadBytesFromFile(jpegFile);
+                        jsonManager.GetComponent<JsonParsing>().MakeImageStringArray(bytes);
+
+                        // .jpeg 파일의 현재 디렉토리를 가져옵니다.
+                        string currentDirectory = Path.GetDirectoryName(jpegFile);
+                        filePath = Path.GetDirectoryName(jpegFile);
+                        Debug.Log("Current Directory of " + Path.GetFileName(jpegFile) + ": " + currentDirectory);
+                    }
+                     
+
+
+
                 }
                 var ordered = jsonStrings.OrderBy(pair => pair.Key).ToDictionary(pair => pair.Key, pair => pair.Value);
                 jsonStrings = ordered;

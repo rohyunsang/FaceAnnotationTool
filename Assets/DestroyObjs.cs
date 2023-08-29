@@ -12,10 +12,6 @@ public class DestroyObjs : MonoBehaviour
 
     public void DestroyBtn()
     {
-        // faceImage의 자식 오브젝트 모두 삭제
-
-        jsonManager.GetComponent<JsonParsing>().ClearObjs();
-
         // mainScrollViewContent의 자식 오브젝트 모두 삭제
         foreach (Transform child in mainScrollViewContent.transform)
         {

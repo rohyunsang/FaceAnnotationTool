@@ -43,9 +43,9 @@ public class JsonSerialization : MonoBehaviour
     public int saveCount = 0;
     public GameObject UserDataObj;
 
-    private const float PIXEL_WIDTH = 2136f;
-    private const float PIXEL_HEIGHT = 3216f;
-    private const float PIXEL_FACEIMAGE_WIDTH = 715f;
+    public float PIXEL_WIDTH = 2136f;
+    public float PIXEL_HEIGHT = 3216f;
+    public float PIXEL_FACEIMAGE_WIDTH = 715f;
     private const float PIXEL_FACEIMAGE_HEIGHT = 1080f;
 
     private Dictionary<string, List<RectangleEntry>> rectangleDict = new Dictionary<string, List<RectangleEntry>>();
@@ -54,8 +54,15 @@ public class JsonSerialization : MonoBehaviour
 
     public GameObject FileBrowserObj;
 
+    public void ClearRectangleDict()
+    {
+        rectangleDict.Clear();
+    }
+
     public void InitializeRectangleDict()
     {
+        PIXEL_FACEIMAGE_WIDTH = PIXEL_WIDTH / PIXEL_HEIGHT * PIXEL_FACEIMAGE_HEIGHT;
+
         int totalEntries = jsonParsingObj.GetComponent<JsonParsing>().jsonSquares.Count;
 
         for (int idx = 0; idx < totalEntries; idx++)
@@ -207,11 +214,11 @@ public class JsonSerialization : MonoBehaviour
         string currentPath = FileBrowserObj.GetComponent<FileBrowserTest>().filePath;
 
         // 'jsons' 디렉토리 경로를 생성합니다.
-        string jsonsDirectoryPath = Path.Combine(currentPath, "jsons");
+        string jsonsDirectoryPath = Path.Combine(currentPath, "bboxes");
         Directory.CreateDirectory(jsonsDirectoryPath);  // 디렉토리가 없으면 생성하고, 있으면 아무것도 하지 않습니다.
 
         // 'jsons' 디렉토리 안에 .json 파일을 저장합니다.
-        string jsonFilePath = Path.Combine(jsonsDirectoryPath, "anno" +"_"+ System.DateTime.Now.ToString("MM_dd_HH_mm_ss") + ".json");
+        string jsonFilePath = Path.Combine(jsonsDirectoryPath, "bbox" +"_"+ System.DateTime.Now.ToString("MM_dd_HH_mm_ss") + ".json");
         File.WriteAllText(jsonFilePath, json);
 
         Debug.Log("Complete");

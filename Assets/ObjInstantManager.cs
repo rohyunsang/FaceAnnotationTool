@@ -8,14 +8,17 @@ public class ObjInstantManager : MonoBehaviour
     public RawImage SpawnPoint;
     public GameObject JsonParsingObj;
 
-    private const float PIXEL_WIDTH = 2136f;
-    private const float PIXEL_HEIGHT = 3216f;
+    public float PIXEL_WIDTH = 2136f;
+    public float PIXEL_HEIGHT = 3216f;
 
-    private const float PIXEL_FACEIMAGE_WIDTH = 715f;
+    private float PIXEL_FACEIMAGE_WIDTH = 715f;
     private const float PIXEL_FACEIMAGE_HEIGHT = 1080f;
 
     public void ObjInstant(List<Info> parsedInfo)
     {
+        
+        PIXEL_FACEIMAGE_WIDTH = PIXEL_WIDTH / PIXEL_HEIGHT * PIXEL_FACEIMAGE_HEIGHT;
+        Debug.Log(PIXEL_FACEIMAGE_WIDTH);
         foreach (Info info in parsedInfo)
         {
             GameObjectList gameObjectList = new GameObjectList();
@@ -37,11 +40,11 @@ public class ObjInstantManager : MonoBehaviour
                 RectTransform rectTransform = rectangle.GetComponent<RectTransform>();
 
                 // The width and height of the rectangle
-                float rectWidth = (x2 - x1) / PIXEL_WIDTH * PIXEL_FACEIMAGE_WIDTH;
+                float rectWidth = ((float)(x2 - x1) / PIXEL_WIDTH) * PIXEL_FACEIMAGE_WIDTH;
                 float rectHeight = (y2 - y1) / PIXEL_HEIGHT * PIXEL_FACEIMAGE_HEIGHT;
 
                 // The position of the center of the rectangle
-                Vector2 rectCenter = new Vector2( ((x1 + x2)/2)/ PIXEL_WIDTH * PIXEL_FACEIMAGE_WIDTH, (3216 - (y1 + y2)/2) / PIXEL_WIDTH * PIXEL_FACEIMAGE_WIDTH);
+                Vector2 rectCenter = new Vector2(((x1 + x2) / 2) / PIXEL_WIDTH * PIXEL_FACEIMAGE_WIDTH, (PIXEL_HEIGHT - (y1 + y2) / 2) / PIXEL_WIDTH * PIXEL_FACEIMAGE_WIDTH);
 
                 // Set the size and position of the rectangle
                 rectTransform.sizeDelta = new Vector2(rectWidth, rectHeight);

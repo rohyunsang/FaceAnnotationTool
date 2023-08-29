@@ -4522,6 +4522,8 @@ MonoBehaviour:
   rectanglePrefab: {fileID: 6467952595873649915, guid: c2e234974b6d0e54a85bf07b63ea8ef0, type: 3}
   SpawnPoint: {fileID: 1614480123}
   JsonParsingObj: {fileID: 1623051055}
+  PIXEL_WIDTH: 2136
+  PIXEL_HEIGHT: 3216
 --- !u!1 &745001763
 GameObject:
   m_ObjectHideFlags: 0
@@ -7220,6 +7222,30 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1623051057}
+        m_TargetAssemblyTypeName: JsonParsing, Assembly-CSharp
+        m_MethodName: ClearObjs
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1297550711}
+        m_TargetAssemblyTypeName: JsonSerialization, Assembly-CSharp
+        m_MethodName: ClearRectangleDict
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1268785944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7292,6 +7318,9 @@ MonoBehaviour:
   saveText: {fileID: 1857901797}
   saveCount: 0
   UserDataObj: {fileID: 109269474}
+  PIXEL_WIDTH: 2136
+  PIXEL_HEIGHT: 3216
+  PIXEL_FACEIMAGE_WIDTH: 715
   saveCompleteImage: {fileID: 959916369}
   FileBrowserObj: {fileID: 204374446}
 --- !u!4 &1297550712
@@ -8002,7 +8031,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 907360035}
   m_HandleRect: {fileID: 907360034}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -8217,7 +8246,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 524.89, y: 3.063}
-  m_SizeDelta: {x: 715, y: 1080}
+  m_SizeDelta: {x: 809, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1614480123
 MonoBehaviour:
@@ -8316,6 +8345,7 @@ MonoBehaviour:
   PanelManagerObj: {fileID: 988314403}
   ObjInstantGameObject: {fileID: 724512836}
   faceImage: {fileID: 1614480123}
+  serialJsonObj: {fileID: 1297550710}
   WorkEndImage: {fileID: 509320187}
   jsonSquares: []
   imageDatas: []
@@ -9575,6 +9605,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1297550711}
+        m_TargetAssemblyTypeName: JsonSerialization, Assembly-CSharp
+        m_MethodName: InitializeRectangleDict
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 988314404}
         m_TargetAssemblyTypeName: PanelManager, Assembly-CSharp
         m_MethodName: OffInitPanel
@@ -9614,18 +9656,6 @@ MonoBehaviour:
       - m_Target: {fileID: 988314404}
         m_TargetAssemblyTypeName: PanelManager, Assembly-CSharp
         m_MethodName: OffImageClickInfo
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1297550711}
-        m_TargetAssemblyTypeName: JsonSerialization, Assembly-CSharp
-        m_MethodName: InitializeRectangleDict
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

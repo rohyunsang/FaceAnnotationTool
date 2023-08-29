@@ -26,8 +26,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
     private const int RIGHT_BOTTOM = 3;
     private const int MIDDLE_CENTOR = 4;
 
-    private const float FACEIMAGE_WIDTH = 715f;
-    private const float FACEIMAGE_HEIGHT = 1080f;
+    
     private float FACEIMAGE_BOUNDRY_OFFSET = 10F;
 
     private const float moveSpeed = 0.75f;
@@ -46,12 +45,7 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
         float adjustedPosX = newPos.x - rectTransform.rect.width * rectTransform.pivot.x;
         float adjustedPosY = newPos.y - rectTransform.rect.height * rectTransform.pivot.y;
 
-        // 조정된 경계 체크
-        if (adjustedPosX < -FACEIMAGE_WIDTH / 2 - FACEIMAGE_BOUNDRY_OFFSET || adjustedPosX + rectTransform.rect.width > FACEIMAGE_WIDTH / 2 + FACEIMAGE_BOUNDRY_OFFSET
-            || adjustedPosY < -FACEIMAGE_HEIGHT / 2 - FACEIMAGE_BOUNDRY_OFFSET || adjustedPosY + rectTransform.rect.height > FACEIMAGE_HEIGHT / 2 + FACEIMAGE_BOUNDRY_OFFSET)
-        {
-            return;
-        }
+        
 
         rectTransform.anchoredPosition = newPos;
         UpdateResizeButtons();
@@ -201,11 +195,14 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
         float adjustedPosX = newPosition.x - newSize.x * rectTransform.pivot.x;
         float adjustedPosY = newPosition.y - newSize.y * rectTransform.pivot.y;
 
-        if (adjustedPosX < -FACEIMAGE_WIDTH / 2 - FACEIMAGE_BOUNDRY_OFFSET  || adjustedPosX + rectTransform.rect.width > FACEIMAGE_WIDTH / 2 + FACEIMAGE_BOUNDRY_OFFSET
+        /*
+          if (adjustedPosX < -FACEIMAGE_WIDTH / 2 - FACEIMAGE_BOUNDRY_OFFSET  || adjustedPosX + rectTransform.rect.width > FACEIMAGE_WIDTH / 2 + FACEIMAGE_BOUNDRY_OFFSET
             || adjustedPosY < -FACEIMAGE_HEIGHT / 2 - FACEIMAGE_BOUNDRY_OFFSET || adjustedPosY + rectTransform.rect.height > FACEIMAGE_HEIGHT / 2 + FACEIMAGE_BOUNDRY_OFFSET)
         {
             return;
         }
+         */
+
 
         rectTransform.sizeDelta = newSize;
         rectTransform.localPosition = newPosition;
