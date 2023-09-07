@@ -46,7 +46,7 @@ public class ObjInstantManager : MonoBehaviour
                    
                     // 원의 pivot 설정
                     circleTransform.pivot = new Vector2(0.5f, 0.5f);
-                    circle.name = "circle" + (i / 2).ToString();
+                    circle.name = "face_line_" + (i / 2).ToString();
                     // 생성된 원을 newCircles 리스트에 추가
                     newCircles.Add(circle);
                 }

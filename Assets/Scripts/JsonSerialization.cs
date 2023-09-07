@@ -38,7 +38,7 @@ public class SerializableDict
 public class CircleData
 {
     public string imageName;
-    public List<CircleEntry> position = new List<CircleEntry>();
+    public List<CircleEntry> points = new List<CircleEntry>();
 
 }
 
@@ -46,7 +46,7 @@ public class CircleData
 public class CircleEntry
 {
     public string name;
-    public List<int> position = new List<int>();
+    public List<int> points = new List<int>();
 }
 
 [System.Serializable]
@@ -127,15 +127,15 @@ public class JsonSerialization : MonoBehaviour
 
                 CircleEntry entry = new CircleEntry();
                 entry.name = child.name;
-                entry.position.Add(originalX);
-                entry.position.Add(originalY);
+                entry.points.Add(originalX);
+                entry.points.Add(originalY);
 
                 CircleEntry existingEntry = circleDict[currentId].Find(e => e.name == entry.name);
 
                 if (existingEntry != null)
                 {
                     // Overwrite the points for the existing entry
-                    existingEntry.position = entry.position;
+                    existingEntry.points = entry.points;
                 }
                 else
                 {
@@ -327,7 +327,7 @@ public class JsonSerialization : MonoBehaviour
             CircleData entry = new CircleData
             {
                 imageName = kvp.Key,
-                position = kvp.Value
+                points = kvp.Value
             };
             serializableDict.circleDataList.Add(entry);
         }
@@ -380,15 +380,15 @@ public class JsonSerialization : MonoBehaviour
 
             CircleEntry entry = new CircleEntry();
             entry.name = child.name;
-            entry.position.Add(originalX);
-            entry.position.Add(originalY);
+            entry.points.Add(originalX);
+            entry.points.Add(originalY);
 
             CircleEntry existingEntry = circleDict[currentId].Find(e => e.name == entry.name);
 
             if (existingEntry != null)
             {
                 // Overwrite the points for the existing entry
-                existingEntry.position = entry.position;
+                existingEntry.points = entry.points;
             }
             else
             {
