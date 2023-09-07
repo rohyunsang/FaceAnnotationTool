@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.EventSystems.EventTrigger;
-using UnityEngine.UI.Extensions;
 
 [System.Serializable]
 public class RectangleEntry
@@ -41,7 +39,7 @@ public class CircleData
 {
     public string imageName;
     public List<CircleEntry> position = new List<CircleEntry>();
-    
+
 }
 
 [System.Serializable]
@@ -76,8 +74,10 @@ public class JsonSerialization : MonoBehaviour
     private Dictionary<string, List<RectangleEntry>> rectangleDict = new Dictionary<string, List<RectangleEntry>>();
     private Dictionary<string, List<CircleEntry>> circleDict = new Dictionary<string, List<CircleEntry>>();
     public GameObject saveCompleteImage;
+    public GameObject saveJsonCompleteImage;
 
     public GameObject FileBrowserObj;
+
 
     public void ClearRectangleDict()
     {
@@ -212,7 +212,7 @@ public class JsonSerialization : MonoBehaviour
     }
 
 
-    public void SaveBtn()
+    public void SaveBtn() // using Rectangle save
     {
         int idx = jsonParsingObj.GetComponent<JsonParsing>().idx;
         GameObjectList gameObjectList = jsonParsingObj.GetComponent<JsonParsing>().jsonSquares[idx];
@@ -278,7 +278,7 @@ public class JsonSerialization : MonoBehaviour
         childTransform.gameObject.GetComponent<Portrait>().checkingImage.SetActive(true);
         saveText.text = "완료 : " + saveCount.ToString() + " / " + jsonParsingObj.GetComponent<JsonParsing>().jsonSquares.Count.ToString();
     }
-    public void SaveJson()
+    public void SaveJson()  // json export
     {
 
         SerializableDict serializableDict = new SerializableDict
@@ -306,64 +306,15 @@ public class JsonSerialization : MonoBehaviour
         Directory.CreateDirectory(jsonsDirectoryPath);  // 디렉토리가 없으면 생성하고, 있으면 아무것도 하지 않습니다.
 
         // 'jsons' 디렉토리 안에 .json 파일을 저장합니다.
-        string jsonFilePath = Path.Combine(jsonsDirectoryPath, "bbox" +"_"+ System.DateTime.Now.ToString("MM_dd_HH_mm_ss") + ".json");
+        string jsonFilePath = Path.Combine(jsonsDirectoryPath, "bbox" + "_" + System.DateTime.Now.ToString("MM_dd_HH_mm_ss") + ".json");
         File.WriteAllText(jsonFilePath, json);
 
         Debug.Log("Complete");
+
+
     }
-
-    public void SaveFaceLineAndUserName()
+    public void ExportCircleJson()
     {
-        int totalEntries = jsonParsingObj.GetComponent<JsonParsing>().jsonSquares.Count;
-        for (int idx = 0; idx < totalEntries; idx++)
-        {
-            string currentId = jsonParsingObj.GetComponent<JsonParsing>().parsedInfo[idx].id;
-            if (!circleDict.ContainsKey(currentId))
-            {
-                circleDict[currentId] = new List<CircleEntry>();
-            }
-            GameObjectList gameObjectList = jsonParsingObj.GetComponent<JsonParsing>().jsonCircles[idx];
-
-            foreach (GameObject child in gameObjectList.gameObjects)
-            {
-                RectTransform rectTransform = child.GetComponent<RectTransform>();
-
-                Vector2 pivot = rectTransform.pivot;
-                Vector2 pivotOffset = new Vector2((0.5f - pivot.x) * rectTransform.sizeDelta.x, (0.5f - pivot.y) * rectTransform.sizeDelta.y);
-                Vector2 adjustedPosition = rectTransform.anchoredPosition + pivotOffset;
-
-                Vector2 center = adjustedPosition + new Vector2(PIXEL_FACEIMAGE_WIDTH / 2, PIXEL_FACEIMAGE_HEIGHT / 2);
-                Vector2 topLeft = new Vector2(center.x - rectTransform.sizeDelta.x / 2, center.y + rectTransform.sizeDelta.y / 2);
-                Vector2 bottomRight = new Vector2(center.x + rectTransform.sizeDelta.x / 2, center.y - rectTransform.sizeDelta.y / 2);
-
-                int originalX1 = (int)(topLeft.x / PIXEL_FACEIMAGE_WIDTH * PIXEL_WIDTH);
-                int originalY1 = (int)((PIXEL_FACEIMAGE_HEIGHT - topLeft.y) / PIXEL_FACEIMAGE_HEIGHT * PIXEL_HEIGHT);
-                int originalX2 = (int)(bottomRight.x / PIXEL_FACEIMAGE_WIDTH * PIXEL_WIDTH);
-                int originalY2 = (int)((PIXEL_FACEIMAGE_HEIGHT - bottomRight.y) / PIXEL_FACEIMAGE_HEIGHT * PIXEL_HEIGHT);
-
-                int originalX = (originalX1 + originalX2)/2;
-                int originalY = (originalY1 + originalY2)/2;
-
-                CircleEntry entry = new CircleEntry();
-                entry.name = child.name;
-                entry.position.Add(originalX);
-                entry.position.Add(originalY);
-
-                CircleEntry existingEntry = circleDict[currentId].Find(e => e.name == entry.name);
-
-                if (existingEntry != null)
-                {
-                    // Overwrite the points for the existing entry
-                    existingEntry.position = entry.position;
-                }
-                else
-                {
-                    // Add the new entry if it doesn't exist
-                    circleDict[currentId].Add(entry);
-                }
-            }
-        }
-
         SerializableFaceLineDict serializableDict = new SerializableFaceLineDict()
         {
             userName = UserDataObj.GetComponent<SaveUserData>().idCheckText.text,
@@ -393,10 +344,81 @@ public class JsonSerialization : MonoBehaviour
         File.WriteAllText(jsonFilePath, json);
 
         Debug.Log("face_line and userName save complete.");
+
+        saveJsonCompleteImage.SetActive(true);
+    }
+    public void SaveFaceLineAndUserName()
+    {
+        int totalEntries = jsonParsingObj.GetComponent<JsonParsing>().jsonSquares.Count;
+        int idx = jsonParsingObj.GetComponent<JsonParsing>().idx;
+        string currentId = jsonParsingObj.GetComponent<JsonParsing>().parsedInfo[idx].id;
+        if (!circleDict.ContainsKey(currentId))
+        {
+            circleDict[currentId] = new List<CircleEntry>();
+        }
+        GameObjectList gameObjectList = jsonParsingObj.GetComponent<JsonParsing>().jsonCircles[idx];
+
+        foreach (GameObject child in gameObjectList.gameObjects)
+        {
+            RectTransform rectTransform = child.GetComponent<RectTransform>();
+
+            Vector2 pivot = rectTransform.pivot;
+            Vector2 pivotOffset = new Vector2((0.5f - pivot.x) * rectTransform.sizeDelta.x, (0.5f - pivot.y) * rectTransform.sizeDelta.y);
+            Vector2 adjustedPosition = rectTransform.anchoredPosition + pivotOffset;
+
+            Vector2 center = adjustedPosition + new Vector2(PIXEL_FACEIMAGE_WIDTH / 2, PIXEL_FACEIMAGE_HEIGHT / 2);
+            Vector2 topLeft = new Vector2(center.x - rectTransform.sizeDelta.x / 2, center.y + rectTransform.sizeDelta.y / 2);
+            Vector2 bottomRight = new Vector2(center.x + rectTransform.sizeDelta.x / 2, center.y - rectTransform.sizeDelta.y / 2);
+
+            int originalX1 = (int)(topLeft.x / PIXEL_FACEIMAGE_WIDTH * PIXEL_WIDTH);
+            int originalY1 = (int)((PIXEL_FACEIMAGE_HEIGHT - topLeft.y) / PIXEL_FACEIMAGE_HEIGHT * PIXEL_HEIGHT);
+            int originalX2 = (int)(bottomRight.x / PIXEL_FACEIMAGE_WIDTH * PIXEL_WIDTH);
+            int originalY2 = (int)((PIXEL_FACEIMAGE_HEIGHT - bottomRight.y) / PIXEL_FACEIMAGE_HEIGHT * PIXEL_HEIGHT);
+
+            int originalX = (originalX1 + originalX2) / 2;
+            int originalY = (originalY1 + originalY2) / 2;
+
+            CircleEntry entry = new CircleEntry();
+            entry.name = child.name;
+            entry.position.Add(originalX);
+            entry.position.Add(originalY);
+
+            CircleEntry existingEntry = circleDict[currentId].Find(e => e.name == entry.name);
+
+            if (existingEntry != null)
+            {
+                // Overwrite the points for the existing entry
+                existingEntry.position = entry.position;
+            }
+            else
+            {
+                // Add the new entry if it doesn't exist
+                circleDict[currentId].Add(entry);
+            }
+
+        }
+        saveCount++;
+        Transform childTransform = parentPortraits.transform.Find(jsonParsingObj.GetComponent<JsonParsing>().parsedInfo[idx].id);
+        if (childTransform.gameObject.GetComponent<Portrait>().checkingImage.activeSelf)
+        {
+            saveCount--;
+        }
+        if (saveCount == jsonParsingObj.GetComponent<JsonParsing>().jsonCircles.Count)
+        {
+            saveCount = 0;
+            saveCompleteImage.SetActive(true);
+        }
+
+        childTransform.gameObject.GetComponent<Portrait>().checkingImage.SetActive(true);
+        saveText.text = "완료 : " + saveCount.ToString() + " / " + jsonParsingObj.GetComponent<JsonParsing>().jsonCircles.Count.ToString();
     }
 
     public void OffSaveCompleteImage()
     {
         saveCompleteImage.SetActive(false);
+    }
+    public void OffSaveJsonCompleteImage()
+    {
+        saveJsonCompleteImage.SetActive(false);
     }
 }

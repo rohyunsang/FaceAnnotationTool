@@ -64,8 +64,6 @@ public class JsonParsing : MonoBehaviour
     public List<Texture2D> imageDatas = new List<Texture2D>();
     public List<Info> parsedInfo = new List<Info>();
 
-
-
     public int idx = 0;
 
     public GameObject portraitPrefab;
@@ -78,6 +76,8 @@ public class JsonParsing : MonoBehaviour
 
     // using UI Renderer
     public GameObject UILineRendererObj;
+
+
 
     public void MakeJsonArray(string jsonData)
     {
@@ -129,7 +129,7 @@ public class JsonParsing : MonoBehaviour
 
     public void ClearObjs()
     {
-        this.idx = 0;
+        this.idx = 0; // prevent queueManager out of range
         jsonSquares.Clear();
         jsonCircles.Clear();
         imageDatas.Clear();

@@ -11,7 +11,6 @@ public class PanelManager : MonoBehaviour  // panel and info controller
     public GameObject SavePanel;
     public GameObject LoginPanel;
 
-
     public GameObject faceField;
 
     public GameObject ImageClickInfo;
@@ -22,11 +21,11 @@ public class PanelManager : MonoBehaviour  // panel and info controller
     public GameObject savejsonBtn;
     public GameObject jsonExportBtn;
     public GameObject saveFaceLineBtn;
-    public GameObject completeCountText;
+    public GameObject jsonCircleExportBtn;
 
     public void OnClickBBOXModeBtn()
     {
-        completeCountText.SetActive(true);
+        jsonCircleExportBtn.SetActive(false);
         savejsonBtn.SetActive(true);
         jsonExportBtn.SetActive(true);
         saveFaceLineBtn.SetActive(false);
@@ -34,7 +33,7 @@ public class PanelManager : MonoBehaviour  // panel and info controller
     
     public void OnClickFaceLineBtn()
     {
-        completeCountText.SetActive(false);
+        jsonCircleExportBtn.SetActive(true);
         savejsonBtn.SetActive(false);
         jsonExportBtn.SetActive(false);
         saveFaceLineBtn.SetActive(true);

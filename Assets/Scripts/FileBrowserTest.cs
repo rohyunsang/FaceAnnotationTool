@@ -76,10 +76,6 @@ public class FileBrowserTest : MonoBehaviour
                         filePath = Path.GetDirectoryName(jpegFile);
                         Debug.Log("Current Directory of " + Path.GetFileName(jpegFile) + ": " + currentDirectory);
                     }
-                     
-
-
-
                 }
                 var ordered = jsonStrings.OrderBy(pair => pair.Key).ToDictionary(pair => pair.Key, pair => pair.Value);
                 jsonStrings = ordered;
