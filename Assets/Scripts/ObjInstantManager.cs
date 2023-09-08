@@ -33,11 +33,11 @@ public class ObjInstantManager : MonoBehaviour
                 int y2 = info.point[i*4 +3];
                 if(Mathf.Abs(x1 - x2) < 10)
                 {
-                    x2 = x1 + 18;
+                    x2 = x1 + 36;
                 }
                 if(Mathf.Abs(y1 - y2) < 10)
                 {
-                    y2 = y1 + 18;
+                    y2 = y1 + 36;
                 }
 
                 // Instantiate a rectangle object from the prefab
