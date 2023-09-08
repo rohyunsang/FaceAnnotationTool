@@ -247,9 +247,34 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
         Vector3[] corners = new Vector3[4];
         rectTransform.GetWorldCorners(corners);
 
+        // 부모 rectangle의 크기의 1/4을 계산합니다.
+        float newWidth = rectTransform.rect.width / 2f;
+        float newHeight = rectTransform.rect.height / 2f;
+
+        if(rectTransform.rect.width > rectTransform.rect.height)
+        {
+            newWidth = rectTransform.rect.height / 2f;
+            newHeight = rectTransform.rect.height / 2f;
+        }
+        else
+        {
+            newWidth = rectTransform.rect.width / 2f;
+            newHeight = rectTransform.rect.width / 2f;
+        }
+
+        // 최대 크기를 25로 제한합니다.
+        newWidth = Mathf.Min(newWidth, 25f);
+        newHeight = Mathf.Min(newHeight, 25f);
+        newWidth = Mathf.Max(newWidth, 15f);
+        newHeight = Mathf.Max(newHeight, 15f);
+
         for (int i = 0; i < 4; i++)
         {
             GameObject button = Instantiate(resizeButtonPrefab, corners[i], Quaternion.identity, resizeButtonParent);
+
+            // ButtonPrefab의 크기를 설정합니다.
+            button.GetComponent<RectTransform>().sizeDelta = new Vector2(newWidth, newHeight);
+
             button.GetComponent<ResizeButton>().Init(this, i);
             resizeButtons.Add(button);
         }
