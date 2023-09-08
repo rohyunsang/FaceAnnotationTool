@@ -243,10 +243,13 @@ public class JsonParsing : MonoBehaviour
             imageInfo.point = new List<int>();
             imageInfo.faceLinePoints = new List<int>();
 
-            // Process face_line data
-            foreach (var faceLine in imageData.face_line)
+            if (imageData.face_line != null)
             {
-                imageInfo.faceLinePoints.AddRange(faceLine.points);
+                // Process face_line data
+                foreach (var faceLine in imageData.face_line)
+                {
+                    imageInfo.faceLinePoints.AddRange(faceLine.points);
+                }
             }
 
             int i = 0;  // region_name ¹è¿­ ÀÎµ¦½ÌÀ» À§ÇÑ º¯¼ö
