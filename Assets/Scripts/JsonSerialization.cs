@@ -14,7 +14,6 @@ public class RectangleEntry
 public class ImageData
 {
     public string imageName;
-    public List<FaceLine> face_line;
     public List<RectangleEntry> rectangleEntries = new List<RectangleEntry>();
 }
 
@@ -89,64 +88,9 @@ public class JsonSerialization : MonoBehaviour
         circleDict.Clear();
     }
 
-    public void InitializeCircleDict()
-    {
-        PIXEL_FACEIMAGE_WIDTH = PIXEL_WIDTH / PIXEL_HEIGHT * PIXEL_FACEIMAGE_HEIGHT;
+    
 
-        int totalEntries = jsonParsingObj.GetComponent<JsonParsing>().jsonCircles.Count;
-
-        for (int idx = 0; idx < totalEntries; idx++)
-        {
-            GameObjectList gameObjectList = jsonParsingObj.GetComponent<JsonParsing>().jsonCircles[idx];
-            string currentId = jsonParsingObj.GetComponent<JsonParsing>().parsedInfo[idx].id;
-
-            if (!circleDict.ContainsKey(currentId))
-            {
-                circleDict[currentId] = new List<CircleEntry>();
-            }
-
-            foreach (GameObject child in gameObjectList.gameObjects)
-            {
-                RectTransform rectTransform = child.GetComponent<RectTransform>();
-
-                Vector2 pivot = rectTransform.pivot;
-                Vector2 pivotOffset = new Vector2((0.5f - pivot.x) * rectTransform.sizeDelta.x, (0.5f - pivot.y) * rectTransform.sizeDelta.y);
-                Vector2 adjustedPosition = rectTransform.anchoredPosition + pivotOffset;
-
-                Vector2 center = adjustedPosition + new Vector2(PIXEL_FACEIMAGE_WIDTH / 2, PIXEL_FACEIMAGE_HEIGHT / 2);
-                Vector2 topLeft = new Vector2(center.x - rectTransform.sizeDelta.x / 2, center.y + rectTransform.sizeDelta.y / 2);
-                Vector2 bottomRight = new Vector2(center.x + rectTransform.sizeDelta.x / 2, center.y - rectTransform.sizeDelta.y / 2);
-
-                int originalX1 = (int)(topLeft.x / PIXEL_FACEIMAGE_WIDTH * PIXEL_WIDTH);
-                int originalY1 = (int)((PIXEL_FACEIMAGE_HEIGHT - topLeft.y) / PIXEL_FACEIMAGE_HEIGHT * PIXEL_HEIGHT);
-                int originalX2 = (int)(bottomRight.x / PIXEL_FACEIMAGE_WIDTH * PIXEL_WIDTH);
-                int originalY2 = (int)((PIXEL_FACEIMAGE_HEIGHT - bottomRight.y) / PIXEL_FACEIMAGE_HEIGHT * PIXEL_HEIGHT);
-
-                int originalX = (originalX1 + originalX2) / 2;
-                int originalY = (originalY1 + originalY2) / 2;
-
-                CircleEntry entry = new CircleEntry();
-                entry.name = child.name;
-                entry.points.Add(originalX);
-                entry.points.Add(originalY);
-
-                CircleEntry existingEntry = circleDict[currentId].Find(e => e.name == entry.name);
-
-                if (existingEntry != null)
-                {
-                    // Overwrite the points for the existing entry
-                    existingEntry.points = entry.points;
-                }
-                else
-                {
-                    // Add the new entry if it doesn't exist
-                    circleDict[currentId].Add(entry);
-                }
-            }
-        }
-    }
-
-    public void InitializeRectangleDict()
+    public void InitializeRectangleDict() // using button
     {
         PIXEL_FACEIMAGE_WIDTH = PIXEL_WIDTH / PIXEL_HEIGHT * PIXEL_FACEIMAGE_HEIGHT;
 
@@ -310,108 +254,8 @@ public class JsonSerialization : MonoBehaviour
         File.WriteAllText(jsonFilePath, json);
 
         Debug.Log("Complete");
-
-
     }
-    public void ExportCircleJson()
-    {
-        SerializableFaceLineDict serializableDict = new SerializableFaceLineDict()
-        {
-            userName = UserDataObj.GetComponent<SaveUserData>().idCheckText.text,
-            userEmail = UserDataObj.GetComponent<SaveUserData>().emailCheckText.text,
-            currentTime = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
-        };
-
-        foreach (var kvp in circleDict)
-        {
-            CircleData entry = new CircleData
-            {
-                imageName = kvp.Key,
-                points = kvp.Value
-            };
-            serializableDict.circleDataList.Add(entry);
-        }
-
-        string json = JsonUtility.ToJson(serializableDict, true);
-        string currentPath = FileBrowserObj.GetComponent<FileBrowserTest>().filePath;
-
-        // Create the 'jsons' directory path.
-        string jsonsDirectoryPath = Path.Combine(currentPath, "face_line");
-        Directory.CreateDirectory(jsonsDirectoryPath);  // Create the directory if it doesn't exist, otherwise do nothing.
-
-        // Save the .json file inside the 'jsons' directory.
-        string jsonFilePath = Path.Combine(jsonsDirectoryPath, "face_line" + ".json");
-        File.WriteAllText(jsonFilePath, json);
-
-        Debug.Log("face_line and userName save complete.");
-
-        saveJsonCompleteImage.SetActive(true);
-    }
-    public void SaveFaceLineAndUserName()
-    {
-        int totalEntries = jsonParsingObj.GetComponent<JsonParsing>().jsonSquares.Count;
-        int idx = jsonParsingObj.GetComponent<JsonParsing>().idx;
-        string currentId = jsonParsingObj.GetComponent<JsonParsing>().parsedInfo[idx].id;
-        if (!circleDict.ContainsKey(currentId))
-        {
-            circleDict[currentId] = new List<CircleEntry>();
-        }
-        GameObjectList gameObjectList = jsonParsingObj.GetComponent<JsonParsing>().jsonCircles[idx];
-
-        foreach (GameObject child in gameObjectList.gameObjects)
-        {
-            RectTransform rectTransform = child.GetComponent<RectTransform>();
-
-            Vector2 pivot = rectTransform.pivot;
-            Vector2 pivotOffset = new Vector2((0.5f - pivot.x) * rectTransform.sizeDelta.x, (0.5f - pivot.y) * rectTransform.sizeDelta.y);
-            Vector2 adjustedPosition = rectTransform.anchoredPosition + pivotOffset;
-
-            Vector2 center = adjustedPosition + new Vector2(PIXEL_FACEIMAGE_WIDTH / 2, PIXEL_FACEIMAGE_HEIGHT / 2);
-            Vector2 topLeft = new Vector2(center.x - rectTransform.sizeDelta.x / 2, center.y + rectTransform.sizeDelta.y / 2);
-            Vector2 bottomRight = new Vector2(center.x + rectTransform.sizeDelta.x / 2, center.y - rectTransform.sizeDelta.y / 2);
-
-            int originalX1 = (int)(topLeft.x / PIXEL_FACEIMAGE_WIDTH * PIXEL_WIDTH);
-            int originalY1 = (int)((PIXEL_FACEIMAGE_HEIGHT - topLeft.y) / PIXEL_FACEIMAGE_HEIGHT * PIXEL_HEIGHT);
-            int originalX2 = (int)(bottomRight.x / PIXEL_FACEIMAGE_WIDTH * PIXEL_WIDTH);
-            int originalY2 = (int)((PIXEL_FACEIMAGE_HEIGHT - bottomRight.y) / PIXEL_FACEIMAGE_HEIGHT * PIXEL_HEIGHT);
-
-            int originalX = (originalX1 + originalX2) / 2;
-            int originalY = (originalY1 + originalY2) / 2;
-
-            CircleEntry entry = new CircleEntry();
-            entry.name = child.name;
-            entry.points.Add(originalX);
-            entry.points.Add(originalY);
-
-            CircleEntry existingEntry = circleDict[currentId].Find(e => e.name == entry.name);
-
-            if (existingEntry != null)
-            {
-                // Overwrite the points for the existing entry
-                existingEntry.points = entry.points;
-            }
-            else
-            {
-                // Add the new entry if it doesn't exist
-                circleDict[currentId].Add(entry);
-            }
-
-        }
-        saveCount++;
-        Transform childTransform = parentPortraits.transform.Find(jsonParsingObj.GetComponent<JsonParsing>().parsedInfo[idx].id);
-        if (childTransform.gameObject.GetComponent<Portrait>().checkingImage.activeSelf)
-        {
-            saveCount--;
-        }
-        if (saveCount == jsonParsingObj.GetComponent<JsonParsing>().jsonCircles.Count)
-        {
-            saveCount = 0;
-            saveCompleteImage.SetActive(true);
-        }
-
-        childTransform.gameObject.GetComponent<Portrait>().checkingImage.SetActive(true);
-        saveText.text = "¿Ï·á : " + saveCount.ToString() + " / " + jsonParsingObj.GetComponent<JsonParsing>().jsonCircles.Count.ToString();
-    }
+    
 
     public void OffSaveCompleteImage()
     {

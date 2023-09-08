@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UI.Extensions;
 
 [System.Serializable]
 public class RectangleEntryFile
@@ -30,7 +29,7 @@ public class ImageDataFile
 [System.Serializable]
 public class RootObject
 {
-    public List<ImageData> imageDataList;
+    public List<ImageDataFile> imageDataList;
 }
 
 [System.Serializable]
@@ -76,8 +75,6 @@ public class JsonParsing : MonoBehaviour
 
     // using UI Renderer
     public GameObject UILineRendererObj;
-
-
 
     public void MakeJsonArray(string jsonData)
     {
@@ -193,19 +190,10 @@ public class JsonParsing : MonoBehaviour
     {
         if(jsonSquares.Count != 0)
             jsonSquares[this.idx].gameObjects.ForEach(square => square.SetActive(false));
-        if (jsonCircles.Count != 0) 
-            jsonCircles[this.idx].gameObjects.ForEach(circle => circle.SetActive(false));
         // 1. 사진을 클릭하면 idx를 기준으로 jsonSquare과 이미지를 뛰운다. 
         this.idx = idx;
         if(jsonSquares.Count != 0)
             jsonSquares[this.idx].gameObjects.ForEach(square => square.SetActive(true));
-        if (jsonCircles.Count != 0)
-        {
-            jsonCircles[this.idx].gameObjects.ForEach(circle => circle.SetActive(true));
-
-            UILineConnector lineConnector = UILineRendererObj.GetComponent<UILineConnector>();
-            lineConnector.transforms = jsonCircles[this.idx].gameObjects.Select(go => go.GetComponent<RectTransform>()).ToArray();
-        }
         faceImage.texture = imageDatas[this.idx];
         if (!isCoroutineRunning && jsonSquares.Count != 0)
         {
@@ -270,14 +258,9 @@ public class JsonParsing : MonoBehaviour
                 imageInfo.point.AddRange(rectangleEntry.points);
                 i++;
             }
-
             parsedInfo.Add(imageInfo); // 생성된 정보를 목록에 추가
-
         }
-        
-
-        parsedInfo.Sort((info1, info2) => string.Compare(info1.id, info2.id)); // 여기가 문제 
-        ObjInstantGameObject.GetComponent<ObjInstantManager>().ObjCircleInstant(parsedInfo);
+        parsedInfo.Sort((info1, info2) => string.Compare(info1.id, info2.id));  
         ObjInstantGameObject.GetComponent<ObjInstantManager>().ObjRectangleInstant(parsedInfo);
     }
 

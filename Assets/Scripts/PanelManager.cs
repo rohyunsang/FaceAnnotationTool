@@ -18,35 +18,8 @@ public class PanelManager : MonoBehaviour  // panel and info controller
 
     public GameObject selectModeInfo;
 
-    public GameObject savejsonBtn;
-    public GameObject jsonExportBtn;
-    public GameObject saveFaceLineBtn;
-    public GameObject jsonCircleExportBtn;
+   
 
-    public void OnClickBBOXModeBtn()
-    {
-        jsonCircleExportBtn.SetActive(false);
-        savejsonBtn.SetActive(true);
-        jsonExportBtn.SetActive(true);
-        saveFaceLineBtn.SetActive(false);
-    }
-    
-    public void OnClickFaceLineBtn()
-    {
-        jsonCircleExportBtn.SetActive(true);
-        savejsonBtn.SetActive(false);
-        jsonExportBtn.SetActive(false);
-        saveFaceLineBtn.SetActive(true);
-    }
-
-    public void OnSelectModeInfo()
-    {
-        selectModeInfo.SetActive(true);
-    }
-    public void OffSelectModeInfo()
-    {
-        selectModeInfo.SetActive(false);
-    }
 
     public void OnImageEditBtn()
     {
