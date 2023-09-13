@@ -31,11 +31,11 @@ public class ObjInstantManager : MonoBehaviour
                 int y1 = info.point[i*4 +1];
                 int x2 = info.point[i*4 +2];
                 int y2 = info.point[i*4 +3];
-                if(Mathf.Abs(x1 - x2) < 10)
+                if(Mathf.Abs(x1 - x2) < 36)
                 {
                     x2 = x1 + 36;
                 }
-                if(Mathf.Abs(y1 - y2) < 10)
+                if(Mathf.Abs(y1 - y2) < 36)
                 {
                     y2 = y1 + 36;
                 }
