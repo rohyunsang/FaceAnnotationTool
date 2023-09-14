@@ -3,59 +3,6 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
-[System.Serializable]
-public class RectangleEntry
-{
-    public string name;
-    public List<int> points = new List<int>();
-}
-
-[System.Serializable]
-public class ImageData
-{
-    public string imageName;
-    public List<RectangleEntry> rectangleEntries = new List<RectangleEntry>();
-}
-
-[System.Serializable]
-public class RectangleData
-{
-    public string imageName;
-    public List<RectangleEntry> rectangleEntries = new List<RectangleEntry>();
-}
-
-[System.Serializable]
-public class SerializableDict
-{
-    public List<ImageData> imageDataList = new List<ImageData>();
-    public string userName;
-    public string userEmail;
-    public string currentTime;
-}
-
-[System.Serializable]
-public class CircleData
-{
-    public string imageName;
-    public List<CircleEntry> points = new List<CircleEntry>();
-
-}
-
-[System.Serializable]
-public class CircleEntry
-{
-    public string name;
-    public List<int> points = new List<int>();
-}
-
-[System.Serializable]
-public class SerializableFaceLineDict
-{
-    public string userName;
-    public string userEmail;
-    public string currentTime;
-    public List<CircleData> circleDataList = new List<CircleData>();
-}
 
 public class JsonSerialization : MonoBehaviour
 {
@@ -70,7 +17,7 @@ public class JsonSerialization : MonoBehaviour
     public float PIXEL_FACEIMAGE_WIDTH = 715f;
     private const float PIXEL_FACEIMAGE_HEIGHT = 1080f;
 
-    private Dictionary<string, List<RectangleEntry>> rectangleDict = new Dictionary<string, List<RectangleEntry>>();
+    private Dictionary<string, List<RectangleEntryString>> rectangleDict = new Dictionary<string, List<RectangleEntryString>>();
     private Dictionary<string, List<CircleEntry>> circleDict = new Dictionary<string, List<CircleEntry>>();
     public GameObject saveCompleteImage;
     public GameObject saveJsonCompleteImage;
@@ -88,7 +35,7 @@ public class JsonSerialization : MonoBehaviour
         circleDict.Clear();
     }
 
-    
+
 
     public void InitializeRectangleDict() // using button
     {
@@ -103,7 +50,7 @@ public class JsonSerialization : MonoBehaviour
 
             if (!rectangleDict.ContainsKey(currentId))
             {
-                rectangleDict[currentId] = new List<RectangleEntry>();
+                rectangleDict[currentId] = new List<RectangleEntryString>();
             }
 
             foreach (GameObject child in gameObjectList.gameObjects)
@@ -124,16 +71,18 @@ public class JsonSerialization : MonoBehaviour
                 int originalX2 = (int)(bottomRight.x / PIXEL_FACEIMAGE_WIDTH * PIXEL_WIDTH);
                 int originalY2 = (int)((PIXEL_FACEIMAGE_HEIGHT - bottomRight.y) / PIXEL_FACEIMAGE_HEIGHT * PIXEL_HEIGHT);
 
-                RectangleEntry entry = new RectangleEntry();
+                RectangleEntryString entry = new RectangleEntryString();
                 entry.name = child.name;
 
-                entry.points.Add(originalX1);
-                entry.points.Add(originalY1);
-                entry.points.Add(originalX2);
-                entry.points.Add(originalY2);
+                entry.points.Add(originalX1.ToString());
+                entry.points.Add(originalY1.ToString());
+                entry.points.Add(originalX2.ToString());
+                entry.points.Add(originalY2.ToString());
+
+                
 
                 // Check if an entry with the same name exists
-                RectangleEntry existingEntry = rectangleDict[currentId].Find(e => e.name == entry.name);
+                RectangleEntryString existingEntry = rectangleDict[currentId].Find(e => e.name == entry.name);
 
                 if (existingEntry != null)
                 {
@@ -164,7 +113,7 @@ public class JsonSerialization : MonoBehaviour
 
         if (!rectangleDict.ContainsKey(currentId))
         {
-            rectangleDict[currentId] = new List<RectangleEntry>();
+            rectangleDict[currentId] = new List<RectangleEntryString>();
         }
 
         foreach (GameObject child in gameObjectList.gameObjects)
@@ -184,16 +133,25 @@ public class JsonSerialization : MonoBehaviour
             int originalX2 = (int)(bottomRight.x / PIXEL_FACEIMAGE_WIDTH * PIXEL_WIDTH);
             int originalY2 = (int)((PIXEL_FACEIMAGE_HEIGHT - bottomRight.y) / PIXEL_FACEIMAGE_HEIGHT * PIXEL_HEIGHT);
 
-            RectangleEntry entry = new RectangleEntry();
+            RectangleEntryString entry = new RectangleEntryString();
             entry.name = child.name;
 
-            entry.points.Add(originalX1);
-            entry.points.Add(originalY1);
-            entry.points.Add(originalX2);
-            entry.points.Add(originalY2);
-
+            if (rectTransform.sizeDelta.x < 0 || rectTransform.sizeDelta.y < 0)
+            {
+                entry.points.Add("None");
+                entry.points.Add("None");
+                entry.points.Add("None");
+                entry.points.Add("None");
+            }
+            else
+            {
+                entry.points.Add(originalX1.ToString());
+                entry.points.Add(originalY1.ToString());
+                entry.points.Add(originalX2.ToString());
+                entry.points.Add(originalY2.ToString());
+            }
             // Check if an entry with the same name exists
-            RectangleEntry existingEntry = rectangleDict[currentId].Find(e => e.name == entry.name);
+            RectangleEntryString existingEntry = rectangleDict[currentId].Find(e => e.name == entry.name);
 
             if (existingEntry != null)
             {
@@ -255,7 +213,7 @@ public class JsonSerialization : MonoBehaviour
 
         Debug.Log("Complete");
     }
-    
+
 
     public void OffSaveCompleteImage()
     {

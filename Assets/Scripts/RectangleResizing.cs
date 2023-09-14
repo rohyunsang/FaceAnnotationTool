@@ -30,7 +30,6 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
     private float FACEIMAGE_BOUNDRY_OFFSET = 10F;
 
     private const float moveSpeed = 0.75f;
-
     private void Start()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -225,6 +224,9 @@ public class RectangleResizing : MonoBehaviour, IDragHandler, IEndDragHandler, I
             if(results.Count > 1)
                 gameObject.GetComponent<Image>().raycastTarget = false;
         }
+
+
+
     }
     public void OnPointerUp(PointerEventData eventData)
     {

@@ -6,7 +6,62 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [System.Serializable]
-public class RectangleEntryFile
+public class CircleData
+{
+    public string imageName;
+    public List<CircleEntry> points = new List<CircleEntry>();
+}
+
+[System.Serializable]
+public class CircleEntry
+{
+    public string name;
+    public List<int> points = new List<int>();
+}
+
+[System.Serializable]
+public class SerializableFaceLineDict
+{
+    public string userName;
+    public string userEmail;
+    public string currentTime;
+    public List<CircleData> circleDataList = new List<CircleData>();
+}
+
+
+[System.Serializable]
+public class RectangleEntryString
+{
+    public string name;
+    public List<string> points = new List<string>();
+}
+
+
+[System.Serializable]
+public class ImageData
+{
+    public string imageName;
+    public List<RectangleEntryString> rectangleEntries = new List<RectangleEntryString>();
+}
+
+[System.Serializable]
+public class RectangleData
+{
+    public string imageName;
+    public List<RectangleEntry> rectangleEntries = new List<RectangleEntry>();
+}
+
+[System.Serializable]
+public class SerializableDict
+{
+    public List<ImageData> imageDataList = new List<ImageData>();
+    public string userName;
+    public string userEmail;
+    public string currentTime;
+}
+
+[System.Serializable]
+public class RectangleEntry
 {
     public string name;
     public List<int> points;
@@ -27,10 +82,25 @@ public class ImageDataFile
 }
 
 [System.Serializable]
-public class RootObject
+public class ImageDataFileString
+{
+    public string imageName;
+    public List<FaceLine> face_line;
+    public List<RectangleEntryString> rectangleEntries;
+}
+
+
+
+[System.Serializable]
+public class RootObject // integer
 {
     public List<ImageDataFile> imageDataList;
 }
+public class RootStringObject // string
+{
+    public List<ImageDataFileString> imageDataList;
+}
+
 
 [System.Serializable]
 public class Info  //structure
@@ -42,7 +112,7 @@ public class Info  //structure
 }
 
 [System.Serializable]
-public class GameObjectList
+public class GameObjectList  // using jsonCircle and jsonRectangle
 {
     public List<GameObject> gameObjects = new List<GameObject>();
 }
@@ -188,11 +258,11 @@ public class JsonParsing : MonoBehaviour
     }
     public void QueueManager(int idx) // using btn;
     {
-        if(jsonSquares.Count != 0)
+        if (jsonSquares.Count != 0)
             jsonSquares[this.idx].gameObjects.ForEach(square => square.SetActive(false));
         // 1. 사진을 클릭하면 idx를 기준으로 jsonSquare과 이미지를 뛰운다. 
         this.idx = idx;
-        if(jsonSquares.Count != 0)
+        if (jsonSquares.Count != 0)
             jsonSquares[this.idx].gameObjects.ForEach(square => square.SetActive(true));
         faceImage.texture = imageDatas[this.idx];
         if (!isCoroutineRunning && jsonSquares.Count != 0)
@@ -230,7 +300,49 @@ public class JsonParsing : MonoBehaviour
         }
     }
 
-    public void ParseJSONData(string jsonData)
+    public void ParsingStringJSONDATA(string jsonData)
+    {
+        var rootObject = JsonConvert.DeserializeObject<RootStringObject>(jsonData);
+
+        // rootObject에서 데이터에 액세스
+        foreach (var imageData in rootObject.imageDataList)
+        {
+            Info imageInfo = new Info();
+            imageInfo.id = imageData.imageName;
+            imageInfo.region_name = new string[imageData.rectangleEntries.Count];
+            imageInfo.point = new List<int>();
+            imageInfo.faceLinePoints = new List<int>();
+
+            if (imageData.face_line != null)
+            {
+                // Process face_line data
+                foreach (var faceLine in imageData.face_line)
+                {
+                    imageInfo.faceLinePoints.AddRange(faceLine.points);
+                }
+            }
+
+            int i = 0;  // region_name 배열 인덱싱을 위한 변수
+
+            // 각 rectangleEntry를 처리하고 imageInfo 객체에 데이터 추가
+            foreach (var rectangleEntry in imageData.rectangleEntries)
+            {
+                imageInfo.region_name[i] = rectangleEntry.name;
+                List<int> list = new List<int>();
+                foreach (string s in rectangleEntry.points)
+                {
+                    list.Add(int.Parse(s));
+                }
+                imageInfo.point.AddRange(list);
+                i++;
+            }
+            parsedInfo.Add(imageInfo); // 생성된 정보를 목록에 추가
+        }
+        parsedInfo.Sort((info1, info2) => string.Compare(info1.id, info2.id));
+        ObjInstantGameObject.GetComponent<ObjInstantManager>().ObjRectangleInstant(parsedInfo);
+    }
+
+    public void ParseJSONData(string jsonData)  //using integer
     {
         var rootObject = JsonConvert.DeserializeObject<RootObject>(jsonData);
 
@@ -263,7 +375,7 @@ public class JsonParsing : MonoBehaviour
             }
             parsedInfo.Add(imageInfo); // 생성된 정보를 목록에 추가
         }
-        parsedInfo.Sort((info1, info2) => string.Compare(info1.id, info2.id));  
+        parsedInfo.Sort((info1, info2) => string.Compare(info1.id, info2.id));
         ObjInstantGameObject.GetComponent<ObjInstantManager>().ObjRectangleInstant(parsedInfo);
     }
 
