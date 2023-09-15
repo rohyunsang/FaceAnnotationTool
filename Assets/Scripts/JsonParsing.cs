@@ -145,7 +145,7 @@ public class JsonParsing : MonoBehaviour
 
     // using UI Renderer
     public GameObject UILineRendererObj;
-
+    public GameObject rectUndoObj;
     public void MakeJsonArray(string jsonData)
     {
         ParsingStringJSONDATA(jsonData);
@@ -258,6 +258,8 @@ public class JsonParsing : MonoBehaviour
     }
     public void QueueManager(int idx) // using btn;
     {
+        rectUndoObj.GetComponent<RectUndo>().ClearStack();
+        
         if (jsonSquares.Count != 0)
             jsonSquares[this.idx].gameObjects.ForEach(square => square.SetActive(false));
         // 1. 사진을 클릭하면 idx를 기준으로 jsonSquare과 이미지를 뛰운다. 

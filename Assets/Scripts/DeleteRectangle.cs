@@ -5,14 +5,17 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class DeleteRectangle : MonoBehaviour, IPointerDownHandler 
+public class DeleteRectangle : MonoBehaviour, IPointerDownHandler
 {
     public GameObject deleteButtonPrefab; // Reference to the deleteButton prefab
     public GraphicRaycaster graphicRaycaster;
+    public GameObject rectUndoObj;
+    public GameObject faceImage;
 
     private void Start()
     {
-        
+        rectUndoObj = GameObject.Find("UndoManager");
+        faceImage = GameObject.Find("faceImage");
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -33,8 +36,8 @@ public class DeleteRectangle : MonoBehaviour, IPointerDownHandler
                 deleteButtonInstance.GetComponent<RectTransform>().SetAsLastSibling();
 
                 // Set the position of the deleteButton relative to where the rectangle was clicked
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(rectangle.transform as RectTransform, eventData.position, eventData.pressEventCamera, out Vector2 localPointerPosition);
-                deleteButtonInstance.GetComponent<RectTransform>().anchoredPosition = localPointerPosition + new Vector2(10f, 10f); // Adjust as needed
+                Vector2 localPointerPosition = ConvertToBackgroundLocalCoordinates(eventData.position, faceImage.transform, deleteButtonInstance.transform);
+                deleteButtonInstance.GetComponent<RectTransform>().anchoredPosition = localPointerPosition + new Vector2(-250f, -440f); // Adjust as needed
 
                 // Add a listener to the Delete button to destroy the circle when clicked
                 Button deleteButton = deleteButtonInstance.transform.Find("DeleteButton").GetComponent<Button>();
@@ -44,6 +47,8 @@ public class DeleteRectangle : MonoBehaviour, IPointerDownHandler
                         RectTransform rectTransform = rectangle.GetComponent<RectTransform>();
                         if (rectTransform != null)
                         {
+                            rectUndoObj.GetComponent<RectUndo>().originalSize.Push(rectTransform.sizeDelta);
+                            rectUndoObj.GetComponent<RectUndo>().undoRectangle.Push(rectangle);
                             rectTransform.sizeDelta = new Vector2(-1, -1);
                         }
 
@@ -63,7 +68,16 @@ public class DeleteRectangle : MonoBehaviour, IPointerDownHandler
                     cancelButton.onClick.AddListener(() => Destroy(deleteButtonInstance));
                 }
             }
-            // ... (rest of the method)
         }
+    }
+
+    private Vector2 ConvertToBackgroundLocalCoordinates(Vector2 originalLocalPos, Transform originalParent, Transform targetParent)
+    {
+        Vector3 worldPos = originalParent.TransformPoint(originalLocalPos); // Convert to world coordinates
+        Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(null, worldPos); // Convert world to screen
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(targetParent as RectTransform, screenPos, null, out Vector2 localPos); // Convert screen to local of target
+
+        return localPos;
     }
 }
