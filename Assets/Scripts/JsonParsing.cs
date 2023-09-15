@@ -148,7 +148,7 @@ public class JsonParsing : MonoBehaviour
 
     public void MakeJsonArray(string jsonData)
     {
-        ParseJSONData(jsonData);
+        ParsingStringJSONDATA(jsonData);
     }
     public void MakeImageStringArray(byte[] bytes)
     {
@@ -331,7 +331,10 @@ public class JsonParsing : MonoBehaviour
                 List<int> list = new List<int>();
                 foreach (string s in rectangleEntry.points)
                 {
-                    list.Add(int.Parse(s));
+                    if (s.Contains("None"))
+                        list.Add(0);
+                    else
+                        list.Add(int.Parse(s));
                 }
                 imageInfo.point.AddRange(list);
                 i++;

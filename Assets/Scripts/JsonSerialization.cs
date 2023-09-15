@@ -136,7 +136,7 @@ public class JsonSerialization : MonoBehaviour
             RectangleEntryString entry = new RectangleEntryString();
             entry.name = child.name;
 
-            if (rectTransform.sizeDelta.x < 0 || rectTransform.sizeDelta.y < 0)
+            if (rectTransform.sizeDelta.x < 10 || rectTransform.sizeDelta.y < 10)
             {
                 entry.points.Add("None");
                 entry.points.Add("None");
@@ -212,6 +212,8 @@ public class JsonSerialization : MonoBehaviour
         File.WriteAllText(jsonFilePath, json);
 
         Debug.Log("Complete");
+
+        saveJsonCompleteImage.SetActive(true);
     }
 
 
