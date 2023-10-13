@@ -6844,7 +6844,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 907360035}
   m_HandleRect: {fileID: 907360034}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -7293,7 +7293,6 @@ MonoBehaviour:
   ObjInstantGameObject: {fileID: 724512836}
   faceImage: {fileID: 1614480123}
   serialJsonObj: {fileID: 1297550710}
-  WorkEndImage: {fileID: 0}
   jsonSquares: []
   jsonCircles: []
   imageDatas: []
@@ -7303,8 +7302,9 @@ MonoBehaviour:
   scrollView: {fileID: 1328031789}
   scrollViewInitPanel: {fileID: 2115277488}
   failWindow: {fileID: 1144032414}
-  UILineRendererObj: {fileID: 0}
   rectUndoObj: {fileID: 1090119109}
+  imageWidths: 
+  imageHeights: 
 --- !u!1 &1630371037
 GameObject:
   m_ObjectHideFlags: 0
@@ -8478,7 +8478,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1297550711}
         m_TargetAssemblyTypeName: JsonSerialization, Assembly-CSharp
-        m_MethodName: InitializeCircleDict
+        m_MethodName: InitializeRectangleDict
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

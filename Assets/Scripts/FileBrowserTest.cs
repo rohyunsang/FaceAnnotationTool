@@ -37,7 +37,7 @@ public class FileBrowserTest : MonoBehaviour
 
                 if (extension == "")
                 {
-                    // 모든 .json 파일 처리
+                    // 占쏙옙占� .json 占쏙옙占쏙옙 처占쏙옙
                     List<string> jsonFiles = GetAllFilesInDirectory(FileBrowser.Result[i], "*.json");
                     foreach (string jsonFile in jsonFiles)
                     {
@@ -45,13 +45,12 @@ public class FileBrowserTest : MonoBehaviour
                             continue;
                         if (Path.GetFileName(jsonFile).Contains("face"))
                             continue;
-                        Debug.Log("Processing JSON file: " + Path.GetFileName(jsonFile));  // JSON 파일 이름 디버그
+                        Debug.Log("Processing JSON file: " + Path.GetFileName(jsonFile));  // JSON 占쏙옙占쏙옙 占싱몌옙 占쏙옙占쏙옙占�
                         byte[] bytes = FileBrowserHelpers.ReadBytesFromFile(jsonFile);
                         jsonStrings[Path.GetFileName(jsonFile)] = System.Text.Encoding.UTF8.GetString(bytes);
 
                     }
                     
-                     // 모든 .jpg 파일 처리
                     List<string> jpgFiles = GetAllFilesInDirectory(FileBrowser.Result[i], "*.jpg");
                     List<string> sortedJpgFiles = jpgFiles.OrderBy(Path.GetFileName).ToList();
                     foreach (string jpgFile in sortedJpgFiles)
@@ -59,13 +58,11 @@ public class FileBrowserTest : MonoBehaviour
                         byte[] bytes = FileBrowserHelpers.ReadBytesFromFile(jpgFile);
                         jsonManager.GetComponent<JsonParsing>().MakeImageStringArray(bytes);
 
-                        // .jpg 파일의 현재 디렉토리를 가져옵니다.
                         string currentDirectory = Path.GetDirectoryName(jpgFile);
                         filePath = Path.GetDirectoryName(jpgFile);
                         Debug.Log("Current Directory of " + Path.GetFileName(jpgFile) + ": " + currentDirectory);
                     }
                     
-                     // 모든 .jpeg 파일 처리
                     List<string> jpegFiles = GetAllFilesInDirectory(FileBrowser.Result[i], "*.jpeg");
                     List<string> sortedJpegFiles = jpegFiles.OrderBy(Path.GetFileName).ToList();
                     foreach (string jpegFile in sortedJpegFiles)
@@ -73,7 +70,6 @@ public class FileBrowserTest : MonoBehaviour
                         byte[] bytes = FileBrowserHelpers.ReadBytesFromFile(jpegFile);
                         jsonManager.GetComponent<JsonParsing>().MakeImageStringArray(bytes);
 
-                        // .jpeg 파일의 현재 디렉토리를 가져옵니다.
                         string currentDirectory = Path.GetDirectoryName(jpegFile);
                         filePath = Path.GetDirectoryName(jpegFile);
                         Debug.Log("Current Directory of " + Path.GetFileName(jpegFile) + ": " + currentDirectory);
@@ -85,10 +81,8 @@ public class FileBrowserTest : MonoBehaviour
                 {
                     Debug.Log("Key: " + entry.Key);
                 }
-                // 정렬된 딕셔너리에서 마지막 원소의 값을 가져옵니다.
                 string lastJsonValue = jsonStrings.LastOrDefault().Value;
 
-                // 마지막 원소의 값을 MakeJsonArray 메서드에 전달합니다.
                 jsonManager.GetComponent<JsonParsing>().MakeJsonArray(lastJsonValue);
                 jsonManager.GetComponent<JsonParsing>().CheckingFileCount();
                 string destinationPath = Path.Combine(Application.persistentDataPath, FileBrowserHelpers.GetFilename(FileBrowser.Result[i]));
@@ -101,10 +95,8 @@ public class FileBrowserTest : MonoBehaviour
     {
         List<string> files = new List<string>();
 
-        // 현재 디렉토리에서 파일들을 가져옵니다.
         files.AddRange(Directory.GetFiles(directoryPath, searchPattern));
 
-        // 모든 하위 디렉토리를 가져와 각 하위 디렉토리에 대해 재귀적으로 이 함수를 호출합니다.
         foreach (string subDirectory in Directory.GetDirectories(directoryPath))
         {
             files.AddRange(GetAllFilesInDirectory(subDirectory, searchPattern));

@@ -124,8 +124,6 @@ public class JsonParsing : MonoBehaviour
     public RawImage faceImage;
     public GameObject serialJsonObj;
 
-    public GameObject WorkEndImage;
-
     [SerializeField]
     public List<GameObjectList> jsonSquares = new List<GameObjectList>();
     [SerializeField]
@@ -144,8 +142,11 @@ public class JsonParsing : MonoBehaviour
     private bool isCoroutineRunning = false;
 
     // using UI Renderer
-    public GameObject UILineRendererObj;
     public GameObject rectUndoObj;
+
+    public List<int> imageWidths = new List<int>();
+    public List<int> imageHeights = new List<int>();
+
     public void MakeJsonArray(string jsonData)
     {
         ParsingStringJSONDATA(jsonData);
@@ -156,19 +157,11 @@ public class JsonParsing : MonoBehaviour
         Texture2D texture = new Texture2D(2, 2);
         texture.LoadImage(bytes);
         imageDatas.Add(texture);
+        
+        imageWidths.Add(texture.width);
+        imageHeights.Add(texture.height);
 
-        int width = texture.width;
-        int height = texture.height;
-        serialJsonObj.GetComponent<JsonSerialization>().PIXEL_WIDTH = width;
-        serialJsonObj.GetComponent<JsonSerialization>().PIXEL_HEIGHT = height;
-        ObjInstantGameObject.GetComponent<ObjInstantManager>().PIXEL_WIDTH = width;
-        ObjInstantGameObject.GetComponent<ObjInstantManager>().PIXEL_HEIGHT = height;
-
-        Debug.Log("Texture Width: " + width);
-        Debug.Log("Texture Height: " + height);
-        faceImage.GetComponent<RectTransform>().sizeDelta = new Vector2((float)width / height * 1080f, faceImage.GetComponent<RectTransform>().sizeDelta.y);
     }
-
 
     public void CheckingFileCount()
     {
@@ -208,6 +201,8 @@ public class JsonParsing : MonoBehaviour
             Destroy(child.gameObject);
         }
         isCoroutineRunning = false;
+        imageHeights.Clear();
+        imageWidths.Clear();
     }
 
     private void FailWindowSetActiveFalse()
@@ -262,7 +257,7 @@ public class JsonParsing : MonoBehaviour
         
         if (jsonSquares.Count != 0)
             jsonSquares[this.idx].gameObjects.ForEach(square => square.SetActive(false));
-        // 1. »çÁøÀ» Å¬¸¯ÇÏ¸é idx¸¦ ±âÁØÀ¸·Î jsonSquare°ú ÀÌ¹ÌÁö¸¦ ¶Ù¿î´Ù. 
+        
         this.idx = idx;
         if (jsonSquares.Count != 0)
             jsonSquares[this.idx].gameObjects.ForEach(square => square.SetActive(true));
@@ -271,6 +266,10 @@ public class JsonParsing : MonoBehaviour
         {
             StartCoroutine(SetRaycastTargetTrueEveryTwoSecond());
         }
+
+        //change faceImage ratio
+        faceImage.GetComponent<RectTransform>().sizeDelta = new Vector2((float)imageWidths[idx] / imageHeights[idx] * 1080f, 
+                                                            faceImage.GetComponent<RectTransform>().sizeDelta.y);
     }
 
     private IEnumerator SetRaycastTargetTrueEveryTwoSecond()
@@ -282,14 +281,12 @@ public class JsonParsing : MonoBehaviour
             {
                 foreach (GameObject obj in list.gameObjects)
                 {
-                    // Image ÄÄÆ÷³ÍÆ®¿¡ ´ëÇÑ Ã³¸®
                     Image img = obj.GetComponent<Image>();
                     if (img != null)
                     {
                         img.raycastTarget = true;
                     }
 
-                    // RawImage ÄÄÆ÷³ÍÆ®¿¡ ´ëÇÑ Ã³¸®
                     RawImage rawImg = obj.GetComponent<RawImage>();
                     if (rawImg != null)
                     {
@@ -306,7 +303,6 @@ public class JsonParsing : MonoBehaviour
     {
         var rootObject = JsonConvert.DeserializeObject<RootStringObject>(jsonData);
 
-        // rootObject¿¡¼­ µ¥ÀÌÅÍ¿¡ ¾×¼¼½º
         foreach (var imageData in rootObject.imageDataList)
         {
             Info imageInfo = new Info();
@@ -324,9 +320,7 @@ public class JsonParsing : MonoBehaviour
                 }
             }
 
-            int i = 0;  // region_name ¹è¿­ ÀÎµ¦½ÌÀ» À§ÇÑ º¯¼ö
-
-            // °¢ rectangleEntry¸¦ Ã³¸®ÇÏ°í imageInfo °´Ã¼¿¡ µ¥ÀÌÅÍ Ãß°¡
+            int i = 0;  
             foreach (var rectangleEntry in imageData.rectangleEntries)
             {
                 imageInfo.region_name[i] = rectangleEntry.name;
@@ -341,7 +335,7 @@ public class JsonParsing : MonoBehaviour
                 imageInfo.point.AddRange(list);
                 i++;
             }
-            parsedInfo.Add(imageInfo); // »ý¼ºµÈ Á¤º¸¸¦ ¸ñ·Ï¿¡ Ãß°¡
+            parsedInfo.Add(imageInfo); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ï¿ï¿½ ï¿½ß°ï¿½
         }
         parsedInfo.Sort((info1, info2) => string.Compare(info1.id, info2.id));
         ObjInstantGameObject.GetComponent<ObjInstantManager>().ObjRectangleInstant(parsedInfo);
@@ -351,7 +345,7 @@ public class JsonParsing : MonoBehaviour
     {
         var rootObject = JsonConvert.DeserializeObject<RootObject>(jsonData);
 
-        // rootObject¿¡¼­ µ¥ÀÌÅÍ¿¡ ¾×¼¼½º
+        // rootObjectï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ ï¿½×¼ï¿½ï¿½ï¿½
         foreach (var imageData in rootObject.imageDataList)
         {
             Info imageInfo = new Info();
@@ -369,16 +363,16 @@ public class JsonParsing : MonoBehaviour
                 }
             }
 
-            int i = 0;  // region_name ¹è¿­ ÀÎµ¦½ÌÀ» À§ÇÑ º¯¼ö
+            int i = 0;  // region_name ï¿½è¿­ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-            // °¢ rectangleEntry¸¦ Ã³¸®ÇÏ°í imageInfo °´Ã¼¿¡ µ¥ÀÌÅÍ Ãß°¡
+            // ï¿½ï¿½ rectangleEntryï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï°ï¿½ imageInfo ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
             foreach (var rectangleEntry in imageData.rectangleEntries)
             {
                 imageInfo.region_name[i] = rectangleEntry.name;
                 imageInfo.point.AddRange(rectangleEntry.points);
                 i++;
             }
-            parsedInfo.Add(imageInfo); // »ý¼ºµÈ Á¤º¸¸¦ ¸ñ·Ï¿¡ Ãß°¡
+            parsedInfo.Add(imageInfo); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ï¿ï¿½ ï¿½ß°ï¿½
         }
         parsedInfo.Sort((info1, info2) => string.Compare(info1.id, info2.id));
         ObjInstantGameObject.GetComponent<ObjInstantManager>().ObjRectangleInstant(parsedInfo);
@@ -392,7 +386,7 @@ public class JsonParsing : MonoBehaviour
             {
                 GameObject circle = gameObjectList.gameObjects[i];
 
-                // GameObjectÀÇ ÇöÀç È°¼ºÈ­ »óÅÂ¸¦ È®ÀÎÇÏ°í ±× ¹Ý´ë »óÅÂ·Î ¼³Á¤ÇÕ´Ï´Ù.
+                // GameObjectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È°ï¿½ï¿½È­ ï¿½ï¿½ï¿½Â¸ï¿½ È®ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ ï¿½Ý´ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
                 circle.SetActive(!circle.activeSelf);
             }
         }

@@ -18,15 +18,21 @@ public class ObjInstantManager : MonoBehaviour
     
     public void ObjRectangleInstant(List<Info> parsedInfo)
     {
-        
-        PIXEL_FACEIMAGE_WIDTH = PIXEL_WIDTH / PIXEL_HEIGHT * PIXEL_FACEIMAGE_HEIGHT;
-        Debug.Log(PIXEL_FACEIMAGE_WIDTH);
+        int idx = 0;
         foreach (Info info in parsedInfo)
         {
+            PIXEL_WIDTH = JsonParsingObj.GetComponent<JsonParsing>().imageWidths[idx];
+            PIXEL_HEIGHT = JsonParsingObj.GetComponent<JsonParsing>().imageHeights[idx];
+            Debug.Log("width" +JsonParsingObj.GetComponent<JsonParsing>().imageWidths[idx]);
+            PIXEL_FACEIMAGE_WIDTH = (float)JsonParsingObj.GetComponent<JsonParsing>().imageWidths[idx] 
+            / (float)JsonParsingObj.GetComponent<JsonParsing>().imageHeights[idx]  * PIXEL_FACEIMAGE_HEIGHT;
+            idx++;
+            Debug.Log(PIXEL_FACEIMAGE_WIDTH);
             GameObjectList gameObjectList = new GameObjectList();
             List<GameObject> newRectangles = new List<GameObject>();
             for (int i = 0; i < info.region_name.Length; i++) 
             {
+                
                 int x1 = info.point[i*4];
                 int y1 = info.point[i*4 +1];
                 int x2 = info.point[i*4 +2];

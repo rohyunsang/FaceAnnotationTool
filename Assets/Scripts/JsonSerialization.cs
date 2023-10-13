@@ -21,7 +21,6 @@ public class JsonSerialization : MonoBehaviour
     private Dictionary<string, List<CircleEntry>> circleDict = new Dictionary<string, List<CircleEntry>>();
     public GameObject saveCompleteImage;
     public GameObject saveJsonCompleteImage;
-
     public GameObject FileBrowserObj;
 
 
@@ -39,12 +38,13 @@ public class JsonSerialization : MonoBehaviour
 
     public void InitializeRectangleDict() // using button
     {
-        PIXEL_FACEIMAGE_WIDTH = PIXEL_WIDTH / PIXEL_HEIGHT * PIXEL_FACEIMAGE_HEIGHT;
-
         int totalEntries = jsonParsingObj.GetComponent<JsonParsing>().jsonSquares.Count;
 
         for (int idx = 0; idx < totalEntries; idx++)
         {
+            PIXEL_FACEIMAGE_WIDTH = (float)jsonParsingObj.GetComponent<JsonParsing>().imageWidths[idx] 
+                            / (float)jsonParsingObj.GetComponent<JsonParsing>().imageHeights[idx]  
+                            * PIXEL_FACEIMAGE_HEIGHT;
             GameObjectList gameObjectList = jsonParsingObj.GetComponent<JsonParsing>().jsonSquares[idx];
             string currentId = jsonParsingObj.GetComponent<JsonParsing>().parsedInfo[idx].id;
 
@@ -55,7 +55,6 @@ public class JsonSerialization : MonoBehaviour
 
             foreach (GameObject child in gameObjectList.gameObjects)
             {
-                // ... (±âÁ¸ÀÇ »ç°¢Çü Ç×¸ñÀ» Ãß°¡/¼öÁ¤ÇÏ´Â ·ÎÁ÷)
                 RectTransform rectTransform = child.GetComponent<RectTransform>();
 
                 Vector2 pivot = rectTransform.pivot;
@@ -100,8 +99,10 @@ public class JsonSerialization : MonoBehaviour
 
     public void ClearSaveCount()
     {
+        /*
         saveCount = 0;
-        saveText.text = "¿Ï·á : " + saveCount.ToString() + " / " + jsonParsingObj.GetComponent<JsonParsing>().jsonSquares.Count.ToString();
+        saveText.text = "ï¿½Ï·ï¿½ : " + saveCount.ToString() + " / " + jsonParsingObj.GetComponent<JsonParsing>().jsonSquares.Count.ToString();
+        */
     }
 
 
@@ -115,6 +116,10 @@ public class JsonSerialization : MonoBehaviour
         {
             rectangleDict[currentId] = new List<RectangleEntryString>();
         }
+
+        PIXEL_FACEIMAGE_WIDTH = (float)jsonParsingObj.GetComponent<JsonParsing>().imageWidths[idx] 
+                            / (float)jsonParsingObj.GetComponent<JsonParsing>().imageHeights[idx]  
+                            * PIXEL_FACEIMAGE_HEIGHT;
 
         foreach (GameObject child in gameObjectList.gameObjects)
         {
@@ -178,7 +183,7 @@ public class JsonSerialization : MonoBehaviour
         }
 
         childTransform.gameObject.GetComponent<Portrait>().checkingImage.SetActive(true);
-        saveText.text = "¿Ï·á : " + saveCount.ToString() + " / " + jsonParsingObj.GetComponent<JsonParsing>().jsonSquares.Count.ToString();
+        saveText.text = "ì™„ë£Œ : " + saveCount.ToString() + " / " + jsonParsingObj.GetComponent<JsonParsing>().jsonSquares.Count.ToString();
     }
     public void SaveJson()  // json export
     {
@@ -203,11 +208,11 @@ public class JsonSerialization : MonoBehaviour
         string json = JsonUtility.ToJson(serializableDict, true);
         string currentPath = FileBrowserObj.GetComponent<FileBrowserTest>().filePath;
 
-        // 'jsons' µð·ºÅä¸® °æ·Î¸¦ »ý¼ºÇÕ´Ï´Ù.
+        // 'jsons' ï¿½ï¿½ï¿½ä¸® ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
         string jsonsDirectoryPath = Path.Combine(currentPath, "bboxes");
-        Directory.CreateDirectory(jsonsDirectoryPath);  // µð·ºÅä¸®°¡ ¾øÀ¸¸é »ý¼ºÇÏ°í, ÀÖÀ¸¸é ¾Æ¹«°Íµµ ÇÏÁö ¾Ê½À´Ï´Ù.
+        Directory.CreateDirectory(jsonsDirectoryPath);  // ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ¹ï¿½ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê½ï¿½ï¿½Ï´ï¿½.
 
-        // 'jsons' µð·ºÅä¸® ¾È¿¡ .json ÆÄÀÏÀ» ÀúÀåÇÕ´Ï´Ù.
+        // 'jsons' ï¿½ï¿½ï¿½ä¸® ï¿½È¿ï¿½ .json ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
         string jsonFilePath = Path.Combine(jsonsDirectoryPath, "bbox" + "_" + System.DateTime.Now.ToString("MM_dd_HH_mm_ss") + ".json");
         File.WriteAllText(jsonFilePath, json);
 
