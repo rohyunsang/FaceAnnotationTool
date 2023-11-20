@@ -42,8 +42,11 @@ public class JsonSerialization : MonoBehaviour
 
         for (int idx = 0; idx < totalEntries; idx++)
         {
-            PIXEL_FACEIMAGE_WIDTH = (float)jsonParsingObj.GetComponent<JsonParsing>().imageWidths[idx] 
-                            / (float)jsonParsingObj.GetComponent<JsonParsing>().imageHeights[idx]  
+            PIXEL_WIDTH = jsonParsingObj.GetComponent<JsonParsing>().imageWidths[idx];
+            PIXEL_HEIGHT = jsonParsingObj.GetComponent<JsonParsing>().imageHeights[idx];
+
+            PIXEL_FACEIMAGE_WIDTH = (float)jsonParsingObj.GetComponent<JsonParsing>().imageWidths[idx]
+                            / (float)jsonParsingObj.GetComponent<JsonParsing>().imageHeights[idx]
                             * PIXEL_FACEIMAGE_HEIGHT;
             GameObjectList gameObjectList = jsonParsingObj.GetComponent<JsonParsing>().jsonSquares[idx];
             string currentId = jsonParsingObj.GetComponent<JsonParsing>().parsedInfo[idx].id;
@@ -78,7 +81,7 @@ public class JsonSerialization : MonoBehaviour
                 entry.points.Add(originalX2.ToString());
                 entry.points.Add(originalY2.ToString());
 
-                
+
 
                 // Check if an entry with the same name exists
                 RectangleEntryString existingEntry = rectangleDict[currentId].Find(e => e.name == entry.name);
@@ -117,9 +120,11 @@ public class JsonSerialization : MonoBehaviour
             rectangleDict[currentId] = new List<RectangleEntryString>();
         }
 
-        PIXEL_FACEIMAGE_WIDTH = (float)jsonParsingObj.GetComponent<JsonParsing>().imageWidths[idx] 
-                            / (float)jsonParsingObj.GetComponent<JsonParsing>().imageHeights[idx]  
+        PIXEL_FACEIMAGE_WIDTH = (float)jsonParsingObj.GetComponent<JsonParsing>().imageWidths[idx]
+                            / (float)jsonParsingObj.GetComponent<JsonParsing>().imageHeights[idx]
                             * PIXEL_FACEIMAGE_HEIGHT;
+        PIXEL_WIDTH = jsonParsingObj.GetComponent<JsonParsing>().imageWidths[idx];
+        PIXEL_HEIGHT = jsonParsingObj.GetComponent<JsonParsing>().imageHeights[idx];
 
         foreach (GameObject child in gameObjectList.gameObjects)
         {
